@@ -40,7 +40,8 @@ async function loginHandler(req: NextRequest) {
       user: {
         id: user._id,
         email: user.email,
-        role: user.role
+        role: user.role,
+        isSuperUser: user.isSuperUser || (user.email === 'admin@stint.com') // Default super user for admin@stint.com
       },
       accessToken,
       refreshToken

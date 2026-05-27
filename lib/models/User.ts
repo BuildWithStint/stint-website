@@ -5,6 +5,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: 'admin' | 'user';
+  isSuperUser: boolean;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -28,6 +29,10 @@ const userSchema = new Schema<IUser>({
     type: String,
     enum: ['admin', 'user'],
     default: 'admin'
+  },
+  isSuperUser: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
@@ -53,4 +58,4 @@ userSchema.methods.toJSON = function() {
   return userObject;
 };
 
-export const User = mongoose.model<IUser>('User', userSchema);
+export const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Star, Eye, EyeOff, X, Copy } from 'lucide-react';
 import { feedbackAPI } from '../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
+import { AlertDialog } from '../ui/Dialog';
 
 interface Feedback {
   _id: string;
@@ -26,6 +27,10 @@ export function ManageFeedback() {
   const [editingFeedback, setEditingFeedback] = useState<Feedback | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; feedbackId: string | null }>({
+    open: false,
+    feedbackId: null
+  });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -130,12 +135,16 @@ export function ManageFeedback() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this feedback?')) return;
+    setDeleteDialog({ open: true, feedbackId: id });
+  };
+
+  const confirmDeleteFeedback = async () => {
+    if (!deleteDialog.feedbackId) return;
     
     try {
-      const response = await feedbackAPI.deleteFeedback(id);
+      const response = await feedbackAPI.deleteFeedback(deleteDialog.feedbackId);
       if (response.success) {
-        setFeedbacks(feedbacks.filter(f => f._id !== id));
+        setFeedbacks(feedbacks.filter(f => f._id !== deleteDialog.feedbackId));
         toast.success('Feedback deleted successfully!');
       }
     } catch (error: any) {
@@ -447,6 +456,18 @@ export function ManageFeedback() {
           <p className="text-muted-foreground">No feedback yet. Create your first one!</p>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={deleteDialog.open}
+        onOpenChange={(open) => setDeleteDialog({ open, feedbackId: null })}
+        title="Delete Feedback"
+        description="Are you sure you want to delete this feedback? This action cannot be undone."
+        onConfirm={confirmDeleteFeedback}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </div>
   );
 }

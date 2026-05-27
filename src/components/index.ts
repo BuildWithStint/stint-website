@@ -1,5 +1,4 @@
 // Layout Components
-export { CustomCursor } from "./CustomCursor";
 export { Nav } from "./Nav";
 export { Footer } from "./Footer";
 export { MagneticBtn } from "./MagneticBtn";

@@ -12,21 +12,36 @@ import { ManageContactSettings } from '../admin/ManageContactSettings';
 type TabType = 'users' | 'projects' | 'team' | 'feedback' | 'settings';
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<TabType>('users');
   const { user, logout } = useAuth();
-
-  const tabs = [
-    { id: 'users' as TabType, label: 'Users', icon: Users },
-    { id: 'projects' as TabType, label: 'Projects', icon: FolderOpen },
-    { id: 'team' as TabType, label: 'Team', icon: UsersRound },
-    { id: 'feedback' as TabType, label: 'Feedback', icon: MessageSquare },
-    { id: 'settings' as TabType, label: 'Contact Settings', icon: Settings },
+  
+  // Filter tabs based on user permissions
+  const allTabs = [
+    { id: 'users' as TabType, label: 'Users', icon: Users, superUserOnly: true },
+    { id: 'projects' as TabType, label: 'Projects', icon: FolderOpen, superUserOnly: false },
+    { id: 'team' as TabType, label: 'Team', icon: UsersRound, superUserOnly: false },
+    { id: 'feedback' as TabType, label: 'Feedback', icon: MessageSquare, superUserOnly: false },
+    { id: 'settings' as TabType, label: 'Contact Settings', icon: Settings, superUserOnly: false },
   ];
+
+  // Filter tabs based on user permissions
+  const tabs = allTabs.filter(tab => !tab.superUserOnly || user?.isSuperUser);
+  
+  // Set default active tab based on available tabs
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    return user?.isSuperUser ? 'users' : 'projects';
+  });
+
+  // Update active tab when user changes
+  useEffect(() => {
+    if (!user?.isSuperUser && activeTab === 'users') {
+      setActiveTab('projects');
+    }
+  }, [user?.isSuperUser, activeTab]);
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'users':
-        return <ManageUsers />;
+        return user?.isSuperUser ? <ManageUsers /> : <ManageProjects />;
       case 'projects':
         return <ManageProjects />;
       case 'team':
@@ -36,12 +51,12 @@ export function AdminDashboard() {
       case 'settings':
         return <ManageContactSettings />;
       default:
-        return <ManageUsers />;
+        return user?.isSuperUser ? <ManageUsers /> : <ManageProjects />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground cursor-auto">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,6 +66,11 @@ export function AdminDashboard() {
               <span className="ml-4 px-2 py-1 bg-accent/20 text-accent text-sm rounded-full">
                 {user?.email}
               </span>
+              {user?.isSuperUser && (
+                <span className="ml-2 px-2 py-1 bg-blue-500/20 text-blue-500 text-xs rounded-full">
+                  Super Admin
+                </span>
+              )}
             </div>
             <div className="flex items-center space-x-4">
               <a

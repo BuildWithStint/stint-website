@@ -248,7 +248,7 @@ export function Contact() {
                 <MagneticBtn
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex items-center gap-3 px-10 py-4 font-['DM_Mono'] text-xs tracking-[0.2em] uppercase cursor-none hover:opacity-90 transition-opacity duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-3 px-10 py-4 font-['DM_Mono'] text-xs tracking-[0.2em] uppercase hover:opacity-90 transition-opacity duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ background: "var(--accent)", color: "#0A0A0B" }}
                 >
                   {isSubmitting ? (

@@ -4,11 +4,16 @@ import { useState, useEffect } from 'react';
 import { useTeam } from '../../contexts/TeamContext';
 import type { TeamMember } from '../../types/index';
 import toast, { Toaster } from 'react-hot-toast';
+import { AlertDialog } from '../ui/Dialog';
 
 export function ManageTeam() {
   const { teamMembers, addTeamMember, updateTeamMember, deleteTeamMember, isLoading } = useTeam();
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; memberId: string | null }>({
+    open: false,
+    memberId: null
+  });
   
   // Auto-generate next index
   const getNextIndex = () => {
@@ -110,13 +115,17 @@ export function ManageTeam() {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this team member?')) {
-      try {
-        await deleteTeamMember(id);
-        toast.success('Team member deleted successfully!');
-      } catch (error) {
-        toast.error('Failed to delete team member');
-      }
+    setDeleteDialog({ open: true, memberId: id });
+  };
+
+  const confirmDeleteMember = async () => {
+    if (!deleteDialog.memberId) return;
+    
+    try {
+      await deleteTeamMember(deleteDialog.memberId);
+      toast.success('Team member deleted successfully!');
+    } catch (error) {
+      toast.error('Failed to delete team member');
     }
   };
 
@@ -345,6 +354,18 @@ export function ManageTeam() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={deleteDialog.open}
+        onOpenChange={(open) => setDeleteDialog({ open, memberId: null })}
+        title="Delete Team Member"
+        description="Are you sure you want to delete this team member? This action cannot be undone."
+        onConfirm={confirmDeleteMember}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </div>
   );
 }

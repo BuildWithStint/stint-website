@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, ExternalLink, X } from 'lucide-react';
 import { projectsAPI } from '../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
+import { AlertDialog } from '../ui/Dialog';
 
 interface Project {
   _id: string;
@@ -25,6 +26,10 @@ export function ManageProjects() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; projectId: string | null }>({
+    open: false,
+    projectId: null
+  });
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -115,12 +120,16 @@ export function ManageProjects() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this project?')) return;
+    setDeleteDialog({ open: true, projectId: id });
+  };
+
+  const confirmDeleteProject = async () => {
+    if (!deleteDialog.projectId) return;
     
     try {
-      const response = await projectsAPI.deleteProject(id);
+      const response = await projectsAPI.deleteProject(deleteDialog.projectId);
       if (response.success) {
-        setProjects(projects.filter(p => p._id !== id));
+        setProjects(projects.filter(p => p._id !== deleteDialog.projectId));
         toast.success('Project deleted successfully!');
       }
     } catch (error: any) {
@@ -398,6 +407,18 @@ export function ManageProjects() {
           <p className="text-muted-foreground">No projects yet. Create your first project!</p>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={deleteDialog.open}
+        onOpenChange={(open) => setDeleteDialog({ open, projectId: null })}
+        title="Delete Project"
+        description="Are you sure you want to delete this project? This action cannot be undone."
+        onConfirm={confirmDeleteProject}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </div>
   );
 }

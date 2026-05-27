@@ -6,6 +6,14 @@ async function deleteUserHandler(
   req: AuthenticatedRequest
 ) {
   try {
+    // Check if user is super user
+    if (!req.user?.isSuperUser) {
+      return NextResponse.json(
+        { success: false, error: 'Access denied. Super user privileges required.' },
+        { status: 403 }
+      );
+    }
+
     const url = new URL(req.url);
     const id = url.pathname.split('/').pop();
 
@@ -24,9 +32,17 @@ async function deleteUserHandler(
       );
     }
 
+    // Prevent deleting the default super admin
+    const userToDelete = await User.findById(id);
+    if (userToDelete?.email === 'admin@stint.com') {
+      return NextResponse.json(
+        { success: false, error: 'Cannot delete the default super admin account' },
+        { status: 400 }
+      );
+    }
+
     // Check if this is the last admin
     const adminCount = await User.countDocuments({ role: 'admin' });
-    const userToDelete = await User.findById(id);
     
     if (userToDelete?.role === 'admin' && adminCount === 1) {
       return NextResponse.json(

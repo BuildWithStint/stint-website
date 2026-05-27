@@ -54,4 +54,4 @@ const teamMemberSchema = new Schema<ITeamMember>({
   timestamps: true
 });
 
-export const TeamMember = mongoose.model<ITeamMember>('TeamMember', teamMemberSchema);
+export const TeamMember = mongoose.models.TeamMember || mongoose.model<ITeamMember>('TeamMember', teamMemberSchema);

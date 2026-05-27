@@ -68,7 +68,7 @@ export function Nav() {
 
         <MagneticBtn
           href="#contact"
-          className="hidden md:flex items-center gap-2 px-6 py-3 text-xs font-['DM_Mono'] tracking-[0.15em] uppercase cursor-none transition-all duration-300 hover:opacity-90"
+          className="hidden md:flex items-center gap-2 px-6 py-3 text-xs font-['DM_Mono'] tracking-[0.15em] uppercase transition-all duration-300 hover:opacity-90"
           style={{ background: "var(--accent)", color: "#0A0A0B" }}
         >
           Hire Us <ArrowUpRight size={14} />

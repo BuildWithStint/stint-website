@@ -7,6 +7,7 @@ interface User {
   id: string;
   email: string;
   role: 'admin' | 'user';
+  isSuperUser: boolean;
 }
 
 interface AuthContextType {
@@ -41,7 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser({
           id: response.user.id,
           email: response.user.email,
-          role: response.user.role
+          role: response.user.role,
+          isSuperUser: response.user.isSuperUser ?? (response.user.email === 'admin@stint.com') // Fallback for admin@stint.com
         });
       }
     } catch (error) {
@@ -64,11 +66,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
         
-        setUser({
+        const userData = {
           id: response.user.id,
           email: response.user.email,
-          role: response.user.role
-        });
+          role: response.user.role,
+          isSuperUser: response.user.isSuperUser ?? (response.user.email === 'admin@stint.com') // Fallback for admin@stint.com
+        };
+        
+        setUser(userData);
         
         return true;
       }

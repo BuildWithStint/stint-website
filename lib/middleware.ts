@@ -7,6 +7,7 @@ export interface AuthenticatedRequest extends NextRequest {
     id: string;
     email: string;
     role: string;
+    isSuperUser: boolean;
   };
 }
 
@@ -30,7 +31,8 @@ export function withAuth(
       (req as AuthenticatedRequest).user = {
         id: decoded.userId,
         email: decoded.email,
-        role: decoded.role
+        role: decoded.role,
+        isSuperUser: decoded.isSuperUser ?? (decoded.email === 'admin@stint.com') // Fallback for admin@stint.com
       };
       
       return handler(req as AuthenticatedRequest);

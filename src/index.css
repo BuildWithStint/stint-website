@@ -72,10 +72,3 @@
     scroll-behavior: smooth;
   }
 }
-
-/* Custom cursor only on homepage */
-.cursor-none a,
-.cursor-none button,
-.cursor-none [data-hover] {
-  cursor: none;
-}

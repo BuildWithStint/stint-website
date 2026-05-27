@@ -5,19 +5,21 @@ export interface JWTPayload {
   userId: string;
   email: string;
   role: string;
+  isSuperUser: boolean;
 }
 
 export const generateTokens = (user: IUser) => {
   const payload: JWTPayload = {
     userId: user._id.toString(),
     email: user.email,
-    role: user.role
+    role: user.role,
+    isSuperUser: user.isSuperUser ?? (user.email === 'admin@stint.com') // Fallback for admin@stint.com
   };
 
   const accessToken = jwt.sign(
     payload,
     process.env.JWT_SECRET!,
-    { expiresIn: '1h' }
+    { expiresIn: '30m' }
   );
 
   const refreshToken = jwt.sign(

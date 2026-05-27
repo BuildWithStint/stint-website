@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Mail, Shield } from 'lucide-react';
 import { usersAPI } from '../../services/api';
+import { AlertDialog } from '../ui/Dialog';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface User {
   _id: string;
@@ -12,11 +14,28 @@ interface User {
 }
 
 export function ManageUsers() {
+  const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newUser, setNewUser] = useState({ email: '', password: '', role: 'admin' as const });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; userId: string | null }>({
+    open: false,
+    userId: null
+  });
+
+  // Check if current user is super user
+  if (!user?.isSuperUser) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-foreground mb-2">Access Denied</h2>
+          <p className="text-muted-foreground">You need super user privileges to access user management.</p>
+        </div>
+      </div>
+    );
+  }
 
   // Load users from API on mount
   useEffect(() => {
@@ -28,7 +47,9 @@ export function ManageUsers() {
       setIsLoading(true);
       const response = await usersAPI.getUsers();
       if (response.success) {
-        setUsers(response.users);
+        // Filter out the default admin account
+        const filteredUsers = response.users.filter((user: User) => user.email !== 'admin@stint.com');
+        setUsers(filteredUsers);
       }
     } catch (error) {
       console.error('Failed to load users:', error);
@@ -56,12 +77,16 @@ export function ManageUsers() {
   };
 
   const handleDeleteUser = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+    setDeleteDialog({ open: true, userId: id });
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!deleteDialog.userId) return;
     
     try {
-      const response = await usersAPI.deleteUser(id);
+      const response = await usersAPI.deleteUser(deleteDialog.userId);
       if (response.success) {
-        setUsers(users.filter(user => user._id !== id));
+        setUsers(users.filter(user => user._id !== deleteDialog.userId));
       }
     } catch (error: any) {
       console.error('Failed to delete user:', error);
@@ -159,8 +184,8 @@ export function ManageUsers() {
         </div>
         
         <div className="divide-y divide-border">
-          {users.map((user) => (
-            <div key={user._id} className="px-6 py-4 flex items-center justify-between">
+          {users.map((user, index) => (
+            <div key={user._id || `user-${index}`} className="px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
                   <Mail size={16} className="text-accent" />
@@ -196,6 +221,18 @@ export function ManageUsers() {
           <p className="text-muted-foreground">No users found.</p>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={deleteDialog.open}
+        onOpenChange={(open) => setDeleteDialog({ open, userId: null })}
+        title="Delete User"
+        description="Are you sure you want to delete this user? This action cannot be undone."
+        onConfirm={confirmDeleteUser}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </div>
   );
 }

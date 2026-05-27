@@ -18,6 +18,7 @@ async function profileHandler(req: AuthenticatedRequest) {
         id: user._id,
         email: user.email,
         role: user.role,
+        isSuperUser: user.isSuperUser || false, // Default to false if undefined
         createdAt: user.createdAt
       }
     });

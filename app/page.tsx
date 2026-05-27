@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  CustomCursor,
   Nav,
   Hero,
   Ticker,
@@ -17,8 +16,7 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="bg-background text-foreground min-h-screen overflow-x-hidden cursor-none">
-      <CustomCursor />
+    <div className="bg-background text-foreground min-h-screen overflow-x-hidden">
       <Nav />
       <Hero />
       <Ticker />

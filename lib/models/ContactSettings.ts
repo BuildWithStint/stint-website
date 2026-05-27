@@ -72,4 +72,4 @@ const contactSettingsSchema = new Schema<IContactSettings>({
   timestamps: true
 });
 
-export const ContactSettings = mongoose.model<IContactSettings>('ContactSettings', contactSettingsSchema);
+export const ContactSettings = mongoose.models.ContactSettings || mongoose.model<IContactSettings>('ContactSettings', contactSettingsSchema);

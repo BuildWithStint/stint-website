@@ -4,6 +4,14 @@ import { withAuth, withCors, AuthenticatedRequest } from '../../../lib/middlewar
 
 async function getUsersHandler(req: AuthenticatedRequest) {
   try {
+    // Check if user is super user
+    if (!req.user?.isSuperUser) {
+      return NextResponse.json(
+        { success: false, error: 'Access denied. Super user privileges required.' },
+        { status: 403 }
+      );
+    }
+
     const users = await User.find({}).select('-password').sort({ createdAt: -1 });
     
     return NextResponse.json({
@@ -21,6 +29,14 @@ async function getUsersHandler(req: AuthenticatedRequest) {
 
 async function createUserHandler(req: AuthenticatedRequest) {
   try {
+    // Check if user is super user
+    if (!req.user?.isSuperUser) {
+      return NextResponse.json(
+        { success: false, error: 'Access denied. Super user privileges required.' },
+        { status: 403 }
+      );
+    }
+
     const { email, password, role } = await req.json();
 
     if (!email || !password) {
@@ -39,11 +55,12 @@ async function createUserHandler(req: AuthenticatedRequest) {
       );
     }
 
-    // Create new user
+    // Create new user (regular admins, not super users)
     const user = new User({
       email,
       password,
-      role: role || 'admin'
+      role: role || 'admin',
+      isSuperUser: false // New users created by super admin are regular admins
     });
 
     await user.save();
@@ -54,6 +71,7 @@ async function createUserHandler(req: AuthenticatedRequest) {
         id: user._id,
         email: user.email,
         role: user.role,
+        isSuperUser: user.isSuperUser,
         createdAt: user.createdAt
       }
     }, { status: 201 });

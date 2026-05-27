@@ -180,14 +180,14 @@ export function Hero() {
           <div className="flex items-center gap-4 flex-wrap">
             <MagneticBtn
               href="#work"
-              className="flex items-center gap-3 px-8 py-4 font-['DM_Mono'] text-xs tracking-[0.2em] uppercase border border-foreground/20 text-foreground hover:border-foreground/60 transition-all duration-300 cursor-none"
+              className="flex items-center gap-3 px-8 py-4 font-['DM_Mono'] text-xs tracking-[0.2em] uppercase border border-foreground/20 text-foreground hover:border-foreground/60 transition-all duration-300"
             >
               See Our Work
             </MagneticBtn>
 
             <MagneticBtn
               href="#contact"
-              className="flex items-center gap-3 px-8 py-4 font-['DM_Mono'] text-xs tracking-[0.2em] uppercase cursor-none transition-all duration-300 hover:opacity-90"
+              className="flex items-center gap-3 px-8 py-4 font-['DM_Mono'] text-xs tracking-[0.2em] uppercase transition-all duration-300 hover:opacity-90"
               style={{ background: "var(--accent)", color: "#0A0A0B" }}
             >
               Work With Us <ArrowUpRight size={14} />
