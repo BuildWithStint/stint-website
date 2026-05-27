@@ -1,9 +1,11 @@
+'use client'
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { MagneticBtn } from "./MagneticBtn";
 import { NAV_LINKS } from "../constants";
-import stintLogo from "../assets/stint-logo.png";
+const stintLogo = "/stint-logo.png";
 
 export function Nav() {
   const [open, setOpen] = useState(false);

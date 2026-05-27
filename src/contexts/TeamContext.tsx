@@ -1,3 +1,5 @@
+'use client'
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { TeamMember } from '../types/index';
 import { teamAPI } from '../services/api';

@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react';
 import { useTeam } from '../../contexts/TeamContext';
 import type { TeamMember } from '../../types/index';
@@ -183,7 +185,7 @@ export function ManageTeam() {
                 value={formData.initials}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-border rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
-                maxLength="2"
+                maxLength={2}
                 required
               />
             </div>
@@ -227,7 +229,7 @@ export function ManageTeam() {
                 value={formData.index}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-border rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
-                maxLength="2"
+                maxLength={2}
                 readOnly
               />
             </div>

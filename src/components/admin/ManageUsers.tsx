@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Mail, Shield } from 'lucide-react';
 import { usersAPI } from '../../services/api';

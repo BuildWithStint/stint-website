@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { Mail, MapPin, ArrowUpRight, Loader2 } from "lucide-react";

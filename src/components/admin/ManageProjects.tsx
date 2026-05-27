@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, ExternalLink, X } from 'lucide-react';
 import { projectsAPI } from '../../services/api';

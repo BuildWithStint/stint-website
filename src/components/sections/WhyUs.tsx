@@ -1,3 +1,5 @@
+'use client'
+
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { WHY_US_POINTS } from "../../constants";

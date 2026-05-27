@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react';
 import { Mail, MapPin, Save, ExternalLink, Share2 } from 'lucide-react';
 import { contactSettingsAPI } from '../../services/api';

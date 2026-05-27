@@ -1,3 +1,5 @@
+'use client'
+
 import { TICKER_ITEMS } from "../../constants";
 
 export function Ticker() {

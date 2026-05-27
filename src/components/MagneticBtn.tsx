@@ -1,3 +1,5 @@
+'use client'
+
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
@@ -8,6 +10,7 @@ interface MagneticBtnProps {
   onClick?: () => void;
   href?: string;
   type?: "submit" | "button";
+  disabled?: boolean;
 }
 
 export function MagneticBtn({
@@ -17,6 +20,7 @@ export function MagneticBtn({
   onClick,
   href,
   type,
+  disabled,
 }: MagneticBtnProps) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -51,6 +55,6 @@ export function MagneticBtn({
   );
 
   if (href) return <a href={href}>{inner}</a>;
-  if (type === "submit") return <button type="submit">{inner}</button>;
+  if (type === "submit") return <button type="submit" disabled={disabled}>{inner}</button>;
   return inner;
 }

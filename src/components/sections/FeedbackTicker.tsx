@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef, useEffect } from 'react';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { feedbackAPI } from '../../services/api';

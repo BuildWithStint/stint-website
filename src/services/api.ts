@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5001/api';
 
 // Create axios instance
 const api = axios.create({
@@ -40,19 +40,24 @@ api.interceptors.response.use(
             refreshToken,
           });
 
-          const { accessToken, refreshToken: newRefreshToken } = response.data;
+          const { accessToken, refreshToken: newRefreshToken } = response.data as any;
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('refreshToken', newRefreshToken);
 
           // Retry original request with new token
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          originalRequest.headers = {
+            ...originalRequest.headers,
+            Authorization: `Bearer ${accessToken}`,
+          };
           return api(originalRequest);
         }
       } catch (refreshError) {
         // Refresh failed, redirect to login
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/admin/login';
+        if (typeof window !== 'undefined') {
+          window.location.href = '/admin/login';
+        }
         return Promise.reject(refreshError);
       }
     }
@@ -65,17 +70,17 @@ api.interceptors.response.use(
 export const authAPI = {
   login: async (email: string, password: string) => {
     const response = await api.post('/auth/login', { email, password });
-    return response.data;
+    return response.data as any;
   },
 
   getProfile: async () => {
     const response = await api.get('/auth/profile');
-    return response.data;
+    return response.data as any;
   },
 
   refreshToken: async (refreshToken: string) => {
     const response = await api.post('/auth/refresh', { refreshToken });
-    return response.data;
+    return response.data as any;
   },
 };
 
@@ -83,17 +88,17 @@ export const authAPI = {
 export const usersAPI = {
   getUsers: async () => {
     const response = await api.get('/users');
-    return response.data;
+    return response.data as any;
   },
 
   createUser: async (userData: { email: string; password: string; role: string }) => {
     const response = await api.post('/users', userData);
-    return response.data;
+    return response.data as any;
   },
 
   deleteUser: async (userId: string) => {
     const response = await api.delete(`/users/${userId}`);
-    return response.data;
+    return response.data as any;
   },
 };
 
@@ -101,7 +106,7 @@ export const usersAPI = {
 export const projectsAPI = {
   getProjects: async () => {
     const response = await api.get('/projects');
-    return response.data;
+    return response.data as any;
   },
 
   createProject: async (projectData: {
@@ -113,7 +118,7 @@ export const projectsAPI = {
     accent: string;
   }) => {
     const response = await api.post('/projects', projectData);
-    return response.data;
+    return response.data as any;
   },
 
   updateProject: async (projectId: string, projectData: {
@@ -125,12 +130,12 @@ export const projectsAPI = {
     accent: string;
   }) => {
     const response = await api.put(`/projects/${projectId}`, projectData);
-    return response.data;
+    return response.data as any;
   },
 
   deleteProject: async (projectId: string) => {
     const response = await api.delete(`/projects/${projectId}`);
-    return response.data;
+    return response.data as any;
   },
 };
 
@@ -138,7 +143,7 @@ export const projectsAPI = {
 export const teamAPI = {
   getTeamMembers: async () => {
     const response = await api.get('/team');
-    return response.data;
+    return response.data as any;
   },
 
   createTeamMember: async (memberData: {
@@ -151,7 +156,7 @@ export const teamAPI = {
     index: string;
   }) => {
     const response = await api.post('/team', memberData);
-    return response.data;
+    return response.data as any;
   },
 
   updateTeamMember: async (memberId: string, memberData: {
@@ -164,12 +169,12 @@ export const teamAPI = {
     index?: string;
   }) => {
     const response = await api.put(`/team/${memberId}`, memberData);
-    return response.data;
+    return response.data as any;
   },
 
   deleteTeamMember: async (memberId: string) => {
     const response = await api.delete(`/team/${memberId}`);
-    return response.data;
+    return response.data as any;
   },
 };
 
@@ -177,12 +182,12 @@ export const teamAPI = {
 export const feedbackAPI = {
   getFeedbacks: async () => {
     const response = await api.get('/feedback');
-    return response.data;
+    return response.data as any;
   },
 
   getAllFeedbacks: async () => {
     const response = await api.get('/feedback/all');
-    return response.data;
+    return response.data as any;
   },
 
   createFeedback: async (feedbackData: {
@@ -195,7 +200,7 @@ export const feedbackAPI = {
     isVisible?: boolean;
   }) => {
     const response = await api.post('/feedback', feedbackData);
-    return response.data;
+    return response.data as any;
   },
 
   updateFeedback: async (feedbackId: string, feedbackData: {
@@ -208,12 +213,12 @@ export const feedbackAPI = {
     isVisible?: boolean;
   }) => {
     const response = await api.put(`/feedback/${feedbackId}`, feedbackData);
-    return response.data;
+    return response.data as any;
   },
 
   deleteFeedback: async (feedbackId: string) => {
     const response = await api.delete(`/feedback/${feedbackId}`);
-    return response.data;
+    return response.data as any;
   },
 };
 
@@ -221,7 +226,7 @@ export const feedbackAPI = {
 export const contactSettingsAPI = {
   getContactSettings: async () => {
     const response = await api.get('/contact-settings');
-    return response.data;
+    return response.data as any;
   },
 
   updateContactSettings: async (settingsData: {
@@ -233,7 +238,7 @@ export const contactSettingsAPI = {
     linkedin?: string;
   }) => {
     const response = await api.put('/contact-settings', settingsData);
-    return response.data;
+    return response.data as any;
   },
 };
 
@@ -246,7 +251,7 @@ export const contactFormAPI = {
     budget?: string;
   }) => {
     const response = await api.post('/contact/submit', formData);
-    return response.data;
+    return response.data as any;
   },
 };
 
