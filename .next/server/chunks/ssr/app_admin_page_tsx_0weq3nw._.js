@@ -1,3 +1,0 @@
-module.exports=[88367,a=>{"use strict";var b=a.i(87924),c=a.i(11642),d=a.i(50944),e=a.i(72131);a.s(["default",0,function(){let{user:a,isLoading:f}=(0,c.useAuth)(),g=(0,d.useRouter)();return((0,e.useEffect)(()=>{f||(a&&"admin"===a.role?g.push("/admin/dashboard"):g.push("/admin/login"))},[a,f,g]),f)?(0,b.jsx)("div",{className:"min-h-screen bg-background flex items-center justify-center",children:(0,b.jsx)("div",{className:"animate-spin rounded-full h-32 w-32 border-b-2 border-accent"})}):null}])}];
-
-//# sourceMappingURL=app_admin_page_tsx_0weq3nw._.js.map
