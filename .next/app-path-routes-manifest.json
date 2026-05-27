@@ -4,5 +4,16 @@
   "/admin/dashboard/page": "/admin/dashboard",
   "/admin/login/page": "/admin/login",
   "/admin/page": "/admin",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/auth/profile/route": "/api/auth/profile",
+  "/api/auth/refresh/route": "/api/auth/refresh",
+  "/api/contact-settings/route": "/api/contact-settings",
+  "/api/contact/submit/route": "/api/contact/submit",
+  "/api/feedback/all/route": "/api/feedback/all",
+  "/api/feedback/route": "/api/feedback",
+  "/api/projects/route": "/api/projects",
+  "/api/team/route": "/api/team",
+  "/api/users/[id]/route": "/api/users/[id]",
+  "/api/users/route": "/api/users",
   "/page": "/"
 }

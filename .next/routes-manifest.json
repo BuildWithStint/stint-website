@@ -21,7 +21,16 @@
     "afterFiles": [],
     "fallback": []
   },
-  "dynamicRoutes": [],
+  "dynamicRoutes": [
+    {
+      "page": "/api/users/[id]",
+      "regex": "^/api/users/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/users/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
   "staticRoutes": [
     {
       "page": "/",
@@ -58,6 +67,66 @@
       "regex": "^/admin/login(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/admin/login(?:/)?$"
+    },
+    {
+      "page": "/api/auth/login",
+      "regex": "^/api/auth/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/login(?:/)?$"
+    },
+    {
+      "page": "/api/auth/profile",
+      "regex": "^/api/auth/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/profile(?:/)?$"
+    },
+    {
+      "page": "/api/auth/refresh",
+      "regex": "^/api/auth/refresh(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/refresh(?:/)?$"
+    },
+    {
+      "page": "/api/contact/submit",
+      "regex": "^/api/contact/submit(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/contact/submit(?:/)?$"
+    },
+    {
+      "page": "/api/contact-settings",
+      "regex": "^/api/contact\\-settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/contact\\-settings(?:/)?$"
+    },
+    {
+      "page": "/api/feedback",
+      "regex": "^/api/feedback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/feedback(?:/)?$"
+    },
+    {
+      "page": "/api/feedback/all",
+      "regex": "^/api/feedback/all(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/feedback/all(?:/)?$"
+    },
+    {
+      "page": "/api/projects",
+      "regex": "^/api/projects(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/projects(?:/)?$"
+    },
+    {
+      "page": "/api/team",
+      "regex": "^/api/team(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/team(?:/)?$"
+    },
+    {
+      "page": "/api/users",
+      "regex": "^/api/users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/users(?:/)?$"
     }
   ],
   "dataRoutes": [],
