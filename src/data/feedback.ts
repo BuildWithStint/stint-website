@@ -86,7 +86,7 @@ export const feedbackData: Feedback[] = [
     name: "Nina Kowalski",
     email: "nina.k@fashionbrand.com",
     rating: 4,
-    review: "Exceptional creativity and professionalism. They took our vague ideas and turned them into a cohesive, stunning brand identity.",
+    review: "Exceptional creativity and . They took our vague ideas and turned them into a cohesive, stunning brand identity.",
     company: "Fashion Brand",
     position: "Brand Manager"
   },
