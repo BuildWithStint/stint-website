@@ -1,11 +1,11 @@
 export const SITE_CONFIG = {
   name: "STINT",
-  tagline: "New. Hungry. Relentless.",
-  description: "A new creative collective here to prove ourselves.",
-  email: "hello@stintcollective.co",
+  tagline: "Design. Build. Scale.",
+  description: "A digital product and software studio building dependable software for modern teams.",
+  email: "buildwithstint@gmail.com",
   location: "Remote-first · Available worldwide",
   year: "2024",
-  status: "Open for Projects",
+  status: "Accepting new engagements",
 } as const;
 
 export const NAV_LINKS = ["Services", "Work", "Team", "Contact"] as const;
@@ -17,35 +17,35 @@ export const SOCIAL_LINKS = [
 ] as const;
 
 export const TICKER_ITEMS = [
-  "Brand Identity",
-  "Web Design",
-  "Motion",
-  "Strategy",
-  "Art Direction",
+  "Web Development",
+  "Mobile Apps",
+  "Custom Software",
+  "Backend & APIs",
+  "Cloud & DevOps",
+  "ERP Systems",
   "UI/UX",
-  "Content",
-  "Storytelling",
+  "Automation",
 ] as const;
 
 export const MANIFESTO_POINTS = [
-  { n: "01", line: "We are new. That is exactly the point." },
-  { n: "02", line: "Fresh eyes see what seasoned ones have stopped noticing." },
-  { n: "03", line: "We have no legacy work to protect — only future work to prove." },
-  { n: "04", line: "Every project we take is one we treat like our last." },
+  { n: "01", line: "We build software that solves real problems, not just demos." },
+  { n: "02", line: "Clarity first. Complexity is a cost we manage on your behalf." },
+  { n: "03", line: "We measure our work by the outcomes it creates for your team." },
+  { n: "04", line: "Every engagement gets our full attention and our best thinking." },
 ] as const;
 
 export const WHY_US_POINTS = [
   {
-    title: "We treat every project like a portfolio piece.",
-    body: "Because for us, it literally is. We have everything to prove and zero reason to phone it in.",
+    title: "We hold every project to a single standard.",
+    body: "Considered, well-built work — delivered with the same care whether the engagement is large or small.",
   },
   {
-    title: "You get our best thinking, not a junior hand-off.",
-    body: "Small team means the people you talk to are the people building your work. No layers.",
+    title: "You work directly with the people building it.",
+    body: "No hand-offs to junior teams. The people you talk to are the ones writing the code and shipping the work.",
   },
   {
-    title: "We are invested in your outcome.",
-    body: "We need your project to work as much as you do. That alignment is a feature, not a consolation.",
+    title: "We are accountable to your outcome.",
+    body: "Your goals define the work. We align on what success looks like and build toward it deliberately.",
   },
 ] as const;
 

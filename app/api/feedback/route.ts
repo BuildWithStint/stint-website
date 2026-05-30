@@ -4,14 +4,32 @@ import { withAuth, withDatabase, withCors, AuthenticatedRequest } from '../../..
 
 async function getFeedbacksHandler(req: NextRequest) {
   try {
-    // Public route - only return visible feedbacks
-    const feedbacks = await Feedback.find({ isVisible: true })
-      .select('-createdBy')
-      .sort({ createdAt: -1 });
-    
+    // Public route - only return reviews that are visible AND approved by a super user
+    const feedbacks = await Feedback.aggregate([
+      { $match: { isVisible: true, approvedBy: { $ne: null } } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'approvedBy',
+          foreignField: '_id',
+          as: 'approver',
+        },
+      },
+      { $match: { 'approver.isSuperUser': true } },
+      {
+        $project: {
+          createdBy: 0,
+          approvedBy: 0,
+          approver: 0,
+          email: 0,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
+
     return NextResponse.json({
       success: true,
-      feedbacks
+      feedbacks,
     });
   } catch (error) {
     console.error('Get feedbacks error:', error);
@@ -33,7 +51,12 @@ async function createFeedbackHandler(req: AuthenticatedRequest) {
       );
     }
 
-    // Create new feedback
+    const wantsVisible = isVisible !== undefined ? isVisible : true;
+    const isSuper = !!req.user?.isSuperUser;
+
+    // Only super users may publish a review directly; otherwise it stays pending.
+    const finalVisible = wantsVisible && isSuper;
+
     const feedback = new Feedback({
       name,
       email,
@@ -41,8 +64,9 @@ async function createFeedbackHandler(req: AuthenticatedRequest) {
       review,
       company,
       position,
-      isVisible: isVisible !== undefined ? isVisible : true,
-      createdBy: req.user?.id
+      isVisible: finalVisible,
+      createdBy: req.user?.id,
+      approvedBy: finalVisible ? req.user?.id : null,
     });
 
     await feedback.save();
@@ -50,7 +74,7 @@ async function createFeedbackHandler(req: AuthenticatedRequest) {
 
     return NextResponse.json({
       success: true,
-      feedback
+      feedback,
     }, { status: 201 });
   } catch (error) {
     console.error('Create feedback error:', error);

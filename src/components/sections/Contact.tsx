@@ -134,17 +134,17 @@ export function Contact() {
               className="font-['Playfair_Display'] font-black leading-tight mb-8"
               style={{ fontSize: "clamp(2.2rem, 5vw, 4rem)" }}
             >
-              Be our
+              Start a
               <br />
-              first client.
+              project.
             </h2>
             <p
               className="font-['DM_Sans'] text-base leading-relaxed mb-14 max-w-sm"
               style={{ color: "rgba(242,237,228,0.5)" }}
             >
-              We are hungry for our first real projects. If you have something
-              worth building, we want to hear about it. No project is too small
-              to start.
+              Tell us what you're building. Whether it's a new product or an
+              existing system that needs work, we'll help you scope it and move
+              it forward.
             </p>
 
             <div className="space-y-6">
@@ -195,7 +195,7 @@ export function Contact() {
                     style={{ color: "rgba(242,237,228,0.5)" }}
                   >
                     We will review your message and come back to you within 24
-                    hours. Excited already.
+                    hours. Talk soon.
                   </p>
                 </motion.div>
               </div>

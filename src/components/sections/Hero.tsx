@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { MagneticBtn } from "../MagneticBtn";
 import { SITE_CONFIG } from "../../constants";
 
@@ -121,42 +121,42 @@ export function Hero() {
         </motion.div>
 
         {/* Headline */}
-        <div className="overflow-hidden mb-2">
+        <div className="overflow-hidden pb-6 -mb-2">
           <motion.h1
             initial={{ y: "105%" }}
             animate={{ y: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
-            className="font-['Playfair_Display'] font-black text-foreground leading-[0.9]"
+            className="font-['Playfair_Display'] font-black text-foreground leading-[1]"
             style={{ fontSize: "clamp(3.8rem, 11vw, 10.5rem)" }}
           >
-            New.
+            Design.
           </motion.h1>
         </div>
 
-        <div className="overflow-hidden mb-2">
+        <div className="overflow-hidden pb-2 -mb-2">
           <motion.h1
             initial={{ y: "105%" }}
             animate={{ y: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.38 }}
-            className="font-['Playfair_Display'] font-black italic leading-[0.9]"
+            className="font-['Playfair_Display'] font-black italic leading-[1]"
             style={{
               fontSize: "clamp(3.8rem, 11vw, 10.5rem)",
               color: "var(--accent)",
             }}
           >
-            Hungry.
+            Build.
           </motion.h1>
         </div>
 
-        <div className="overflow-hidden mb-12">
+        <div className="overflow-hidden pb-2 mb-8">
           <motion.h1
             initial={{ y: "105%" }}
             animate={{ y: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.51 }}
-            className="font-['Playfair_Display'] font-black text-foreground leading-[0.9]"
+            className="font-['Playfair_Display'] font-black text-foreground leading-[1]"
             style={{ fontSize: "clamp(3.8rem, 11vw, 10.5rem)" }}
           >
-            Relentless.
+            Scale.
           </motion.h1>
         </div>
 
@@ -171,9 +171,8 @@ export function Hero() {
               className="font-['DM_Sans'] text-lg leading-relaxed"
               style={{ color: "rgba(242,237,228,0.55)" }}
             >
-              We are a new creative collective, and we are here to prove
-              ourselves. No portfolio of legacy clients — just an obsession with
-              doing exceptional work.
+              A digital product and software studio. We design and build
+              dependable software that helps teams move faster.
             </p>
           </div>
 
@@ -195,36 +194,6 @@ export function Hero() {
           </div>
         </motion.div>
       </div>
-
-      {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.6 }}
-        className="absolute bottom-10 left-16 hidden md:flex items-center gap-3"
-      >
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.8 }}
-        >
-          <ChevronDown size={14} className="text-muted-foreground" />
-        </motion.div>
-        <span className="font-['DM_Mono'] text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
-          Scroll
-        </span>
-      </motion.div>
-
-      {/* Floating year tag */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.4, duration: 0.7 }}
-        className="absolute bottom-10 right-16 hidden md:block"
-      >
-        <span className="font-['DM_Mono'] text-[10px] tracking-[0.25em] uppercase text-muted-foreground">
-          Est. {SITE_CONFIG.year}
-        </span>
-      </motion.div>
     </section>
   );
 }

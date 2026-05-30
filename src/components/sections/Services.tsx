@@ -63,7 +63,7 @@ export function Services() {
                 }}
               />
 
-              <div className="relative py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between gap-6 px-1 md:px-4">
+              <div className="relative py-8 md:py-10 grid grid-cols-1 md:grid-cols-[45%_35%_20%] md:items-start gap-6 md:gap-10 px-1 md:px-4">
                 <div className="flex items-center gap-6 md:gap-10">
                   <span
                     className="font-['DM_Mono'] text-[10px] tracking-widest"
@@ -95,39 +95,35 @@ export function Services() {
                   </h3>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-10 pl-16 md:pl-0">
-                  <p
-                    className="font-['DM_Sans'] text-sm leading-relaxed max-w-xs transition-all duration-500"
-                    style={{
-                      color:
-                        active === i
-                          ? "rgba(242,237,228,0.75)"
-                          : "rgba(242,237,228,0.5)",
-                      maxHeight: active === i ? 80 : 40,
-                      overflow: "hidden",
-                    }}
-                  >
-                    {s.desc}
-                  </p>
+                <p
+                  className="font-['DM_Sans'] text-sm leading-relaxed max-w-xs transition-all duration-500 pl-16 md:pl-0"
+                  style={{
+                    color:
+                      active === i
+                        ? "rgba(242,237,228,0.75)"
+                        : "rgba(242,237,228,0.5)",
+                  }}
+                >
+                  {s.desc}
+                </p>
 
-                  <div className="flex flex-wrap gap-2 shrink-0">
-                    {s.tags.map((t) => (
-                      <span
-                        key={t}
-                        className="font-['DM_Mono'] text-[10px] tracking-wider px-3 py-1.5 border transition-all duration-300"
-                        style={{
-                          borderColor:
-                            active === i
-                              ? `${s.color}40`
-                              : "rgba(242,237,228,0.08)",
-                          color:
-                            active === i ? s.color : "rgba(242,237,228,0.5)",
-                        }}
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
+                <div className="flex flex-wrap gap-2 pl-16 md:pl-0 md:max-w-[200px]">
+                  {s.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="font-['DM_Mono'] text-[10px] tracking-wider px-3 py-1.5 border transition-all duration-300"
+                      style={{
+                        borderColor:
+                          active === i
+                            ? `${s.color}40`
+                            : "rgba(242,237,228,0.08)",
+                        color:
+                          active === i ? s.color : "rgba(242,237,228,0.5)",
+                      }}
+                    >
+                      {t}
+                    </span>
+                  ))}
                 </div>
               </div>
             </motion.div>

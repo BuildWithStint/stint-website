@@ -9,6 +9,7 @@ export interface IFeedback extends Document {
   position?: string;
   isVisible: boolean;
   createdBy: mongoose.Types.ObjectId;
+  approvedBy?: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -57,6 +58,11 @@ const feedbackSchema = new Schema<IFeedback>({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
+  },
+  approvedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
   }
 }, {
   timestamps: true

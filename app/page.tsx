@@ -23,10 +23,10 @@ export default function HomePage() {
       <Manifesto />
       <Services />
       <Work />
-      <Team />
       <WhyUs />
-      <Contact />
       <FeedbackTicker />
+      <Team />
+      <Contact />
       <Footer />
     </div>
   );

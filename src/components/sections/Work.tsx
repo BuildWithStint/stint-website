@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { projectsAPI } from "../../services/api";
 
 interface Project {
@@ -102,7 +103,7 @@ export function Work() {
 
         {projects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {projects.map((project, i) => (
+            {projects.slice(0, 3).map((project, i) => (
               <motion.div
                 key={project._id}
                 initial={{ opacity: 0, y: 40 }}
@@ -195,6 +196,40 @@ export function Work() {
             <p className="text-muted-foreground text-lg">No projects available yet.</p>
             <p className="text-muted-foreground text-sm mt-2">Check back soon for our latest work!</p>
           </div>
+        )}
+
+        {/* View all projects */}
+        {projects.length >= 4 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-14 flex justify-center"
+          >
+            <Link
+              href="/work"
+              className="group relative inline-flex items-center gap-4 px-10 py-5 font-['DM_Mono'] text-xs tracking-[0.25em] uppercase overflow-hidden transition-colors duration-500"
+              style={{
+                border: "1px solid rgba(200,151,61,0.4)",
+                color: "var(--foreground)",
+              }}
+              data-hover
+            >
+              {/* Fill that slides in from the left on hover */}
+              <span
+                className="absolute inset-0 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)]"
+                style={{ background: "var(--accent)" }}
+                aria-hidden
+              />
+              <span className="relative z-10 transition-colors duration-500 group-hover:text-[#0A0A0B]">
+                View all projects
+              </span>
+              <ArrowUpRight
+                size={14}
+                className="relative z-10 transition-all duration-500 group-hover:text-[#0A0A0B] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </Link>
+          </motion.div>
         )}
 
         {/* CTA under grid */}

@@ -39,16 +39,15 @@ export function Manifesto() {
               className="font-['Playfair_Display'] font-black leading-tight mb-8"
               style={{ fontSize: "clamp(2.2rem, 5vw, 4rem)" }}
             >
-              Newcomers who refuse to act like it.
+              Software built with intent.
             </h2>
             <p
               className="font-['DM_Sans'] text-base leading-relaxed"
               style={{ color: "rgba(242,237,228,0.55)" }}
             >
-              We don't have decades of client work to show you. What we have is
-              sharper: a burning need to make something worth looking at. Every
-              brief we take is the most important one we've ever worked on —
-              because so far, it is.
+              We focus on the details that make software dependable: clear
+              thinking, clean execution, and a finish that holds up in real use.
+              Every engagement gets the same standard of care.
             </p>
           </motion.div>
 

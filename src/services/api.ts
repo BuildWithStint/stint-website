@@ -203,6 +203,18 @@ export const feedbackAPI = {
     return response.data as any;
   },
 
+  submitFeedback: async (feedbackData: {
+    name: string;
+    email: string;
+    rating: number;
+    review: string;
+    company?: string;
+    position?: string;
+  }) => {
+    const response = await api.post('/feedback/submit', feedbackData);
+    return response.data as any;
+  },
+
   updateFeedback: async (feedbackId: string, feedbackData: {
     name: string;
     email: string;

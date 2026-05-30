@@ -33,15 +33,15 @@ export function WhyUs() {
             className="font-['DM_Mono'] text-[10px] tracking-[0.3em] uppercase mb-4 block"
             style={{ color: "var(--accent)" }}
           >
-            Why Axis
+            Why STINT
           </span>
           <h2
             className="font-['Playfair_Display'] font-black leading-tight"
             style={{ fontSize: "clamp(2.2rem, 5vw, 4rem)" }}
           >
-            The case for hiring
+            Why teams
             <br />
-            us first.
+            choose us.
           </h2>
         </motion.div>
 

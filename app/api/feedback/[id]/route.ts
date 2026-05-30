@@ -16,6 +16,21 @@ async function updateFeedbackHandler(req: AuthenticatedRequest) {
 
     const updateData = await req.json();
 
+    // Only super users may publish (set isVisible: true).
+    if (updateData.isVisible === true && !req.user?.isSuperUser) {
+      return NextResponse.json(
+        { success: false, error: 'Only a super admin can publish reviews' },
+        { status: 403 }
+      );
+    }
+
+    // Track approver. When unpublished, clear approvedBy.
+    if (updateData.isVisible === true) {
+      updateData.approvedBy = req.user?.id;
+    } else if (updateData.isVisible === false) {
+      updateData.approvedBy = null;
+    }
+
     // Find and update the feedback
     const feedback = await Feedback.findByIdAndUpdate(
       id,

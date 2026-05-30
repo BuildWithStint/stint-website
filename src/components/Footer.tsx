@@ -37,21 +37,21 @@ export function Footer() {
       className="border-t py-12"
       style={{ borderColor: "rgba(242,237,228,0.07)" }}
     >
-      <div className="max-w-[1440px] mx-auto px-8 md:px-16 flex flex-col md:flex-row items-center justify-between gap-6">
-        <span className="font-['Playfair_Display'] text-2xl font-black">
+      <div className="max-w-[1440px] mx-auto px-8 md:px-16 grid grid-cols-1 md:grid-cols-3 items-center gap-6">
+        <span className="font-['Playfair_Display'] text-2xl font-black justify-self-center md:justify-self-start">
           {SITE_CONFIG.name}
           <span style={{ color: "var(--accent)" }}>.</span>
         </span>
 
         <p
-          className="font-['DM_Mono'] text-[10px] tracking-wider"
+          className="font-['DM_Mono'] text-[10px] tracking-wider text-center justify-self-center"
           style={{ color: "rgba(242,237,228,0.5)" }}
         >
-          © {SITE_CONFIG.year} Axis Collective · Built with intent.
+          © {SITE_CONFIG.year} STINT · Built with intent.
         </p>
 
-        {socialLinks.length > 0 && (
-          <div className="flex items-center gap-8">
+        {socialLinks.length > 0 ? (
+          <div className="flex items-center gap-8 justify-self-center md:justify-self-end">
             {socialLinks.map((s) => (
               <a
                 key={s.name}
@@ -65,6 +65,8 @@ export function Footer() {
               </a>
             ))}
           </div>
+        ) : (
+          <span className="hidden md:block" />
         )}
       </div>
     </footer>
