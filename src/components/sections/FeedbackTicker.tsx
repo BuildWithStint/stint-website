@@ -161,12 +161,13 @@ export function FeedbackTicker() {
     wrap.scrollLeft = dragStateRef.current.scrollLeft - walk;
   };
 
+  // Touch: let the browser handle horizontal scroll natively (gives iOS
+  // momentum). We only pause the RAF and mark interaction so the auto-scroll
+  // doesn't fight the finger.
   const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    const wrap = wrapperRef.current;
-    if (!wrap) return;
     dragStateRef.current.isDown = true;
-    dragStateRef.current.startX = e.touches[0].pageX - wrap.offsetLeft;
-    dragStateRef.current.scrollLeft = wrap.scrollLeft;
+    dragStateRef.current.startX = e.touches[0].pageX;
+    dragStateRef.current.scrollLeft = wrapperRef.current?.scrollLeft ?? 0;
     dragStateRef.current.moved = 0;
     isInteractingRef.current = true;
     isPausedRef.current = true;
@@ -178,12 +179,7 @@ export function FeedbackTicker() {
   };
   const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!dragStateRef.current.isDown) return;
-    const wrap = wrapperRef.current;
-    if (!wrap) return;
-    const x = e.touches[0].pageX - wrap.offsetLeft;
-    const walk = x - dragStateRef.current.startX;
-    dragStateRef.current.moved = Math.abs(walk);
-    wrap.scrollLeft = dragStateRef.current.scrollLeft - walk;
+    dragStateRef.current.moved = Math.abs(e.touches[0].pageX - dragStateRef.current.startX);
   };
 
   const renderStars = (rating: number, size = 12) => (
@@ -298,7 +294,13 @@ export function FeedbackTicker() {
           onTouchEnd={onTouchEnd}
           onTouchMove={onTouchMove}
           className="feedback-scroll overflow-x-auto overflow-y-hidden cursor-grab active:cursor-grabbing select-none"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none", touchAction: "pan-y" }}
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            touchAction: "pan-x",
+            WebkitOverflowScrolling: "touch",
+            overscrollBehaviorX: "contain",
+          }}
         >
           <style>{`
             .feedback-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }
