@@ -117,6 +117,12 @@ export function Hero() {
       )}
 
       <div className="relative max-w-[1440px] mx-auto px-8 md:px-16 w-full pt-28">
+        {/* SEO: real semantic H1 — visually hidden, read by Google + screen readers */}
+        <h1 className="sr-only">
+          Hire senior freelance developers — STINT builds web, mobile, Next.js,
+          React, MERN, backend, and cloud software for startups and growing teams.
+        </h1>
+
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -142,33 +148,36 @@ export function Hero() {
 
         {/* Headline — pure CSS keyframe reveal (see globals.css .hero-line) */}
         <div className="overflow-hidden pb-6 -mb-2">
-          <h1
+          <div
             className="hero-line hero-line--1 font-['Playfair_Display'] font-black text-foreground leading-[1]"
             style={{ fontSize: "clamp(3.8rem, 11vw, 10.5rem)" }}
+            aria-hidden="true"
           >
             Design.
-          </h1>
+          </div>
         </div>
 
         <div className="overflow-hidden pb-2 -mb-2">
-          <h1
+          <div
             className="hero-line hero-line--2 font-['Playfair_Display'] font-black italic leading-[1]"
             style={{
               fontSize: "clamp(3.8rem, 11vw, 10.5rem)",
               color: "var(--accent)",
             }}
+            aria-hidden="true"
           >
             Build.
-          </h1>
+          </div>
         </div>
 
         <div className="overflow-hidden pb-2 mb-8">
-          <h1
+          <div
             className="hero-line hero-line--3 font-['Playfair_Display'] font-black text-foreground leading-[1]"
             style={{ fontSize: "clamp(3.8rem, 11vw, 10.5rem)" }}
+            aria-hidden="true"
           >
             Scale.
-          </h1>
+          </div>
         </div>
 
         <motion.div

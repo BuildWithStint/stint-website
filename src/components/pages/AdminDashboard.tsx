@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Users, FolderOpen, LogOut, UsersRound, MessageSquare, Settings, ExternalLink } from 'lucide-react';
+import { Users, FolderOpen, LogOut, UsersRound, MessageSquare, Settings, ExternalLink, FileText } from 'lucide-react';
 import { ManageUsers } from '../admin/ManageUsers';
 import { ManageProjects } from '../admin/ManageProjects';
 import { ManageTeam } from '../admin/ManageTeam';
 import { ManageFeedback } from '../admin/ManageFeedback';
 import { ManageContactSettings } from '../admin/ManageContactSettings';
+import { ManageBlog } from '../admin/ManageBlog';
 
-type TabType = 'users' | 'projects' | 'team' | 'feedback' | 'settings';
+type TabType = 'users' | 'projects' | 'team' | 'feedback' | 'blog' | 'settings';
 
 export function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -20,6 +21,7 @@ export function AdminDashboard() {
     { id: 'projects' as TabType, label: 'Projects', icon: FolderOpen, superUserOnly: false },
     { id: 'team' as TabType, label: 'Team', icon: UsersRound, superUserOnly: false },
     { id: 'feedback' as TabType, label: 'Feedback', icon: MessageSquare, superUserOnly: false },
+    { id: 'blog' as TabType, label: 'Blog', icon: FileText, superUserOnly: true },
     { id: 'settings' as TabType, label: 'Contact Settings', icon: Settings, superUserOnly: false },
   ];
 
@@ -48,6 +50,8 @@ export function AdminDashboard() {
         return <ManageTeam />;
       case 'feedback':
         return <ManageFeedback />;
+      case 'blog':
+        return user?.isSuperUser ? <ManageBlog /> : <ManageProjects />;
       case 'settings':
         return <ManageContactSettings />;
       default:

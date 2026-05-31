@@ -13,9 +13,9 @@ import {
   FeedbackTicker,
   FAQ,
   Footer,
-} from "../src/components";
+} from '../../src/components'
 
-export default function HomePage() {
+export default function FreelanceClient() {
   return (
     <div className="bg-background text-foreground min-h-screen overflow-x-hidden">
       <Nav />
@@ -31,5 +31,5 @@ export default function HomePage() {
       <Contact />
       <Footer />
     </div>
-  );
+  )
 }

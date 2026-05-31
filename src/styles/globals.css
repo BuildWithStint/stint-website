@@ -9,6 +9,25 @@
   --border: rgba(242, 237, 228, 0.08);
   --muted-foreground: rgba(242, 237, 228, 0.5);
   --accent: #C8973D;
+  color-scheme: dark;
+}
+
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+input[type="month"],
+input[type="week"] {
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator,
+input[type="week"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.4);
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 * {

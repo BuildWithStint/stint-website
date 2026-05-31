@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { MagneticBtn } from "./MagneticBtn";
@@ -51,23 +52,23 @@ export function Nav() {
 
         <ul className="hidden md:flex items-center gap-10">
           {NAV_LINKS.map((l) => (
-            <li key={l}>
-              <a
-                href={`#${l.toLowerCase()}`}
+            <li key={l.href}>
+              <Link
+                href={l.href}
                 className="text-xs font-['DM_Mono'] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 relative group"
               >
-                {l}
+                {l.label}
                 <span
                   className="absolute -bottom-0.5 left-0 h-px w-0 group-hover:w-full transition-all duration-500"
                   style={{ background: "var(--accent)" }}
                 />
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
 
         <MagneticBtn
-          href="#contact"
+          href="/contact"
           className="hidden md:flex items-center gap-2 px-6 py-3 text-xs font-['DM_Mono'] tracking-[0.15em] uppercase transition-all duration-300 hover:opacity-90"
           style={{ background: "var(--accent)", color: "#0A0A0B" }}
         >
@@ -91,14 +92,14 @@ export function Nav() {
           style={{ background: "rgba(10,10,11,0.98)" }}
         >
           {NAV_LINKS.map((l) => (
-            <a
-              key={l}
-              href={`#${l.toLowerCase()}`}
+            <Link
+              key={l.href}
+              href={l.href}
               onClick={() => setOpen(false)}
               className="block font-['Playfair_Display'] text-3xl font-bold text-foreground border-b border-border pb-4"
             >
-              {l}
-            </a>
+              {l.label}
+            </Link>
           ))}
         </motion.div>
       )}

@@ -14,3 +14,4 @@ export { Team } from "./sections/Team";
 export { WhyUs } from "./sections/WhyUs";
 export { Contact } from "./sections/Contact";
 export { FeedbackTicker } from "./sections/FeedbackTicker";
+export { FAQ } from "./sections/FAQ";

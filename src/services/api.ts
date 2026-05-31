@@ -267,4 +267,72 @@ export const contactFormAPI = {
   },
 };
 
+// Blog API
+export interface AdminBlogPost {
+  _id: string;
+  slug: string;
+  title: string;
+  description: string;
+  body: string;
+  coverImage?: string;
+  tags: string[];
+  keywords: string[];
+  author: string;
+  readingTime: string;
+  isPublished: boolean;
+  publishedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BlogInput {
+  slug?: string;
+  title: string;
+  description: string;
+  body: string;
+  coverImage?: string;
+  tags?: string[];
+  keywords?: string[];
+  author?: string;
+  readingTime?: string;
+  isPublished?: boolean;
+  publishedAt?: string;
+}
+
+export const blogAPI = {
+  list: async () => {
+    const response = await api.get('/blog');
+    return response.data as { success: boolean; posts: AdminBlogPost[] };
+  },
+  get: async (id: string) => {
+    const response = await api.get(`/blog/${id}`);
+    return response.data as { success: boolean; post: AdminBlogPost };
+  },
+  create: async (data: BlogInput) => {
+    const response = await api.post('/blog', data);
+    return response.data as { success: boolean; post: AdminBlogPost; error?: string };
+  },
+  update: async (id: string, data: Partial<BlogInput>) => {
+    const response = await api.put(`/blog/${id}`, data);
+    return response.data as { success: boolean; post: AdminBlogPost; error?: string };
+  },
+  remove: async (id: string) => {
+    const response = await api.delete(`/blog/${id}`);
+    return response.data as { success: boolean };
+  },
+  upload: async (file: File) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    const response = await api.post('/blog/upload', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data as {
+      success: boolean;
+      id?: string;
+      url?: string;
+      error?: string;
+    };
+  },
+};
+
 export default api;

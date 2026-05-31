@@ -29,10 +29,17 @@ export const metadata: Metadata = {
     'STINT',
     'stint.digital',
     'freelance software developer',
+    'freelance developers',
+    'hire developers',
+    'freelance web developers',
+    'Next.js developers',
+    'React developers',
+    'remote software engineers',
+    'MERN stack developers',
     'software consultancy',
     'technology partner',
     'software development services',
-    'freelanceing',
+    'freelancing platform',
     'software development for startups',
     'software development for enterprises',
     'remote software development',
@@ -60,7 +67,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/icon.png',
+        url: '/stint-logo.png',
         width: 1200,
         height: 630,
         alt: 'STINT — Design. Build. Scale.',
@@ -72,7 +79,7 @@ export const metadata: Metadata = {
     title: 'STINT — Design. Build. Scale.',
     description:
       'A digital product and software studio building dependable software for modern teams.',
-    images: ['/icon.png'],
+    images: ['/stint-logo.png'],
   },
   robots: {
     index: true,
@@ -106,11 +113,21 @@ const organizationSchema = {
   name: 'STINT',
   alternateName: 'STINT Digital',
   url: SITE_URL,
-  logo: `${SITE_URL}/icon.png`,
+  logo: `${SITE_URL}/stint-logo.png`,
   description:
     'A digital product and software studio specialising in web, mobile, custom software, backend, and cloud development.',
   email: 'buildwithstint@gmail.com',
-  sameAs: [] as string[],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'buildwithstint@gmail.com',
+    contactType: 'customer support',
+    availableLanguage: ['English'],
+  },
+  sameAs: [
+    'https://x.com/stintbuild',
+    'https://www.instagram.com/stint.7',
+    'https://github.com/BuildWithStint',
+  ],
 }
 
 const websiteSchema = {
@@ -130,7 +147,7 @@ const professionalServiceSchema = {
   '@type': 'ProfessionalService',
   name: 'STINT',
   url: SITE_URL,
-  image: `${SITE_URL}/icon.png`,
+  image: `${SITE_URL}/stint-logo.png`,
   priceRange: '$$',
   areaServed: 'Worldwide',
   serviceType: [

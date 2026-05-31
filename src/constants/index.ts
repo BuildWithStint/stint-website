@@ -8,7 +8,13 @@ export const SITE_CONFIG = {
   status: "Accepting new engagements",
 } as const;
 
-export const NAV_LINKS = ["Services", "Work", "Team", "Contact"] as const;
+export const NAV_LINKS = [
+  { label: "Services", href: "/services" },
+  { label: "Work", href: "/work" },
+  { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+] as const;
 
 export const SOCIAL_LINKS = [
   { name: "Instagram", url: "#" },
