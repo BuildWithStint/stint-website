@@ -67,7 +67,7 @@ async function updateHandler(req: AuthenticatedRequest) {
     }
 
     const post = await BlogPost.findByIdAndUpdate(id, update, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true,
     }).lean()
 

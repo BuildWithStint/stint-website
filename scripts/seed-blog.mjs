@@ -307,7 +307,7 @@ async function main() {
     const res = await BlogPost.findOneAndUpdate(
       { slug: post.slug },
       { $set: post },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
+      { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
     )
     if (res.createdAt?.getTime() === res.updatedAt?.getTime()) inserted++
     else updated++

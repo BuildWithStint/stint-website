@@ -20,7 +20,7 @@ async function updateProjectHandler(req: AuthenticatedRequest) {
     const project = await Project.findByIdAndUpdate(
       id,
       updateData,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     ).populate('createdBy', 'email');
 
     if (!project) {

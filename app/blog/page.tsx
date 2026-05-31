@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Nav, Footer } from '../../src/components'
 import { getAllPosts } from '../../lib/blog'
+import { SafeImage } from '../../src/components/blog/SafeImage'
 
 export const revalidate = 300
 
@@ -73,30 +74,28 @@ export default async function BlogIndex() {
                       className="relative aspect-[16/10] overflow-hidden mb-6 border"
                       style={{ borderColor: 'rgba(242,237,228,0.08)' }}
                     >
-                      {p.coverImage ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={p.coverImage}
-                          alt={p.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div
-                          className="w-full h-full flex items-center justify-center"
-                          style={{
-                            background:
-                              'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(200,151,61,0.15) 0%, transparent 70%), rgba(242,237,228,0.03)',
-                          }}
-                        >
-                          <span
-                            className="font-['Playfair_Display'] text-7xl font-black opacity-20"
-                            style={{ color: 'var(--accent)' }}
+                      <SafeImage
+                        src={p.coverImage || '/blog-default.png'}
+                        alt={p.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        fallback={
+                          <div
+                            className="w-full h-full flex items-center justify-center"
+                            style={{
+                              background:
+                                'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(200,151,61,0.15) 0%, transparent 70%), rgba(242,237,228,0.03)',
+                            }}
                           >
-                            S
-                          </span>
-                        </div>
-                      )}
+                            <span
+                              className="font-['Playfair_Display'] text-7xl font-black opacity-20"
+                              style={{ color: 'var(--accent)' }}
+                            >
+                              S
+                            </span>
+                          </div>
+                        }
+                      />
                       <div
                         className="absolute inset-0 pointer-events-none"
                         style={{

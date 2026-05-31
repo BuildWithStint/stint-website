@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { BlogImage } from '../../../../../lib/models/BlogImage'
-import { withCors, withDatabase } from '../../../../../lib/middleware'
+import { connectDatabase } from '../../../../../lib/database'
 
-async function getHandler(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+export async function GET(
+  _req: NextRequest,
+  ctx: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await ctx.params
-    if (!id.match(/^[a-f0-9]{24}$/i)) {
+    if (!/^[a-f0-9]{24}$/i.test(id)) {
       return NextResponse.json({ success: false, error: 'Invalid id' }, { status: 400 })
     }
+
+    await connectDatabase()
 
     const doc = await BlogImage.findById(id).lean<{
       data: Buffer
@@ -23,6 +28,7 @@ async function getHandler(_req: NextRequest, ctx: { params: Promise<{ id: string
       headers: {
         'Content-Type': doc.contentType,
         'Cache-Control': 'public, max-age=31536000, immutable',
+        'Access-Control-Allow-Origin': '*',
       },
     })
   } catch (error) {
@@ -30,5 +36,3 @@ async function getHandler(_req: NextRequest, ctx: { params: Promise<{ id: string
     return NextResponse.json({ success: false, error: 'Failed' }, { status: 500 })
   }
 }
-
-export const GET = withCors(withDatabase(getHandler as never))

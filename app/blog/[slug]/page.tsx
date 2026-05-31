@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { Nav, Footer } from '../../../src/components'
 import { JsonLd, breadcrumbSchema } from '../../../src/components/seo/JsonLd'
 import { Prose } from '../../../src/components/blog/Prose'
+import { SafeImage } from '../../../src/components/blog/SafeImage'
 import { getPostBySlug, getAllSlugs } from '../../../lib/blog'
 
 interface Props {
@@ -132,19 +133,17 @@ export default async function BlogPost({ params }: Props) {
             {post.description}
           </p>
 
-          {post.coverImage ? (
-            <figure className="mb-14 -mx-4 md:mx-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={post.coverImage}
-                alt={post.title}
-                className="w-full h-auto border"
-                style={{ borderColor: 'rgba(242,237,228,0.08)' }}
-              />
-            </figure>
-          ) : (
-            <hr style={{ border: 'none', borderTop: '1px solid rgba(242,237,228,0.1)', marginBottom: '2.5rem' }} />
-          )}
+          <figure className="mb-14 -mx-4 md:mx-0">
+            <SafeImage
+              src={post.coverImage || '/blog-default.png'}
+              alt={post.title}
+              className="w-full h-auto border"
+              style={{ borderColor: 'rgba(242,237,228,0.08)' }}
+              fallback={
+                <hr style={{ border: 'none', borderTop: '1px solid rgba(242,237,228,0.1)' }} />
+              }
+            />
+          </figure>
 
           <Prose>
             <div dangerouslySetInnerHTML={{ __html: post.body }} />

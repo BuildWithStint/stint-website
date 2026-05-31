@@ -249,28 +249,40 @@ export function ManageBlog() {
     wrap(`\n<figure>\n  <img src="${url}" alt="${alt}" />\n  <figcaption>${alt}</figcaption>\n</figure>\n`)
   }
 
-  const uploadFile = async (file: File, target: 'cover' | 'body') => {
+  const uploadFile = (file: File, target: 'cover' | 'body') => {
     setError(null)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image exceeds 5MB. Pick a smaller file.')
+      return
+    }
+    if (!file.type.startsWith('image/')) {
+      setError('Only image files are allowed.')
+      return
+    }
     setUploading(target)
-    try {
-      const res = await blogAPI.upload(file)
-      if (!res.success || !res.url) {
-        setError(res.error || 'Upload failed')
+    const reader = new FileReader()
+    reader.onerror = () => {
+      setError('Could not read file.')
+      setUploading(null)
+    }
+    reader.onload = (ev) => {
+      const dataUrl = (ev.target?.result as string) || ''
+      if (!dataUrl) {
+        setError('Could not read file.')
+        setUploading(null)
         return
       }
       if (target === 'cover') {
-        setForm((f) => ({ ...f, coverImage: res.url! }))
+        setForm((f) => ({ ...f, coverImage: dataUrl }))
       } else {
         const alt = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ')
         wrap(
-          `\n<figure>\n  <img src="${res.url}" alt="${alt}" />\n  <figcaption>${alt}</figcaption>\n</figure>\n`
+          `\n<figure>\n  <img src="${dataUrl}" alt="${alt}" />\n  <figcaption>${alt}</figcaption>\n</figure>\n`
         )
       }
-    } catch (e: any) {
-      setError(e?.response?.data?.error || 'Upload failed')
-    } finally {
       setUploading(null)
     }
+    reader.readAsDataURL(file)
   }
 
   const onCoverFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -417,7 +429,7 @@ export function ManageBlog() {
                 <input
                   ref={coverInputRef}
                   type="file"
-                  accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                  accept="image/*"
                   onChange={onCoverFile}
                   className="hidden"
                 />
@@ -581,7 +593,7 @@ export function ManageBlog() {
               <input
                 ref={bodyImageInputRef}
                 type="file"
-                accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                accept="image/*"
                 onChange={onBodyFile}
                 className="hidden"
               />
@@ -656,9 +668,19 @@ export function ManageBlog() {
                   src={p.coverImage}
                   alt=""
                   className="w-full md:w-24 h-24 object-cover rounded border border-border shrink-0"
+                  onError={(e) => {
+                    e.currentTarget.src = '/blog-default.png'
+                  }}
                 />
               ) : (
-                <div className="w-full md:w-24 h-24 rounded border border-border bg-background shrink-0" />
+                <img
+                  src="/blog-default.png"
+                  alt=""
+                  className="w-full md:w-24 h-24 object-cover rounded border border-border shrink-0 opacity-60"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                  }}
+                />
               )}
 
               <div className="flex-1 min-w-0">

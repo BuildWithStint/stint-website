@@ -20,7 +20,7 @@ async function updateTeamMemberHandler(req: AuthenticatedRequest) {
     const teamMember = await TeamMember.findByIdAndUpdate(
       id,
       updateData,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!teamMember) {

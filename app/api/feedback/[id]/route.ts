@@ -35,7 +35,7 @@ async function updateFeedbackHandler(req: AuthenticatedRequest) {
     const feedback = await Feedback.findByIdAndUpdate(
       id,
       updateData,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     ).populate('createdBy', 'email');
 
     if (!feedback) {
