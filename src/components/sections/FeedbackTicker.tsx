@@ -48,23 +48,39 @@ export function FeedbackTicker() {
     loadFeedbacks();
   }, []);
 
-  // Smooth continuous auto-scroll
+  // Smooth continuous auto-scroll.
+  // NOTE: `scrollLeft` is stored as an integer by every browser, so naive
+  // `wrap.scrollLeft += 0.35` rounds back to 0 each frame and the ticker stalls
+  // on devices that hit 60fps (especially iOS / throttled mobile). We keep a
+  // fractional accumulator in JS and only push whole pixels into scrollLeft.
   useEffect(() => {
     if (feedbacks.length === 0) return;
     const wrap = wrapperRef.current;
     const track = trackRef.current;
     if (!wrap || !track) return;
 
-    const speed = 0.35;
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const speed = 0.45; // px per ~16ms frame
     let last = performance.now();
+    let pos = wrap.scrollLeft;
 
     const tick = (now: number) => {
       const dt = now - last;
       last = now;
       if (!isPausedRef.current && !isInteractingRef.current && !selected) {
         const halfWidth = track.scrollWidth / 2;
-        wrap.scrollLeft += speed * (dt / 16.6667);
-        if (wrap.scrollLeft >= halfWidth) wrap.scrollLeft -= halfWidth;
+        if (halfWidth > 0) {
+          pos += speed * (dt / 16.6667);
+          if (pos >= halfWidth) pos -= halfWidth;
+          wrap.scrollLeft = pos;
+        }
+      } else {
+        // Keep the accumulator in sync if the user dragged / wheeled.
+        pos = wrap.scrollLeft;
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -282,7 +298,7 @@ export function FeedbackTicker() {
           onTouchEnd={onTouchEnd}
           onTouchMove={onTouchMove}
           className="feedback-scroll overflow-x-auto overflow-y-hidden cursor-grab active:cursor-grabbing select-none"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none", touchAction: "pan-y" }}
         >
           <style>{`
             .feedback-scroll::-webkit-scrollbar { display: none; width: 0; height: 0; }

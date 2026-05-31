@@ -4,6 +4,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hero headline reveal — pure CSS keyframe on the GPU. Cheaper and smoother
+   than animating each line through React/framer-motion on low-end mobiles.
+   NOTE: Playfair Display's glyphs overshoot the line-box (we use leading-[1]),
+   so translate at 120% — not 105% — to fully hide the ascenders behind the
+   wrapper's `overflow-hidden`. Otherwise the top of the letters peeks out and
+   it looks "stuck" before the reveal animation kicks in. */
+@keyframes hero-rise {
+  from { transform: translate3d(0, 140%, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+
+.hero-line {
+  display: block;
+  transform: translate3d(0, 140%, 0);
+  will-change: transform;
+  animation: hero-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-line--1 { animation-delay: 0.25s; }
+.hero-line--2 { animation-delay: 0.38s; }
+.hero-line--3 { animation-delay: 0.51s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-line { transform: none; animation: none; }
+}
+
 /* Custom scrollbar styles */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* Internet Explorer 10+ */

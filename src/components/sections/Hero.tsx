@@ -8,9 +8,19 @@ import { SITE_CONFIG } from "../../constants";
 
 export function Hero() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [enableHeavyFx, setEnableHeavyFx] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    // Only attach pointer parallax + render the expensive grain filter on
+    // devices with a precise pointer (desktop). On touch / low-power devices
+    // the SVG turbulence + spring animation stutters the headline reveal.
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!finePointer || reducedMotion) return;
+
+    setEnableHeavyFx(true);
+
     const fn = (e: MouseEvent) => {
       if (!heroRef.current) return;
       const rect = heroRef.current.getBoundingClientRect();
@@ -19,8 +29,8 @@ export function Hero() {
         y: ((e.clientY - rect.top) / rect.height - 0.5) * 10,
       });
     };
-    window.addEventListener("mousemove", fn);
-    return () => window.removeEventListener("mousemove", fn);
+    window.addEventListener('mousemove', fn, { passive: true });
+    return () => window.removeEventListener('mousemove', fn);
   }, []);
 
   return (
@@ -36,8 +46,16 @@ export function Hero() {
         style={{ scale: 1.06 }}
       >
         <img
-          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1800&h=1200&fit=crop&auto=format"
+          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&h=600&fit=crop&auto=format&q=60"
+          srcSet="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=400&fit=crop&auto=format&q=55 600w,
+                  https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&h=600&fit=crop&auto=format&q=60 900w,
+                  https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1400&h=933&fit=crop&auto=format&q=65 1400w,
+                  https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1800&h=1200&fit=crop&auto=format&q=70 1800w"
+          sizes="100vw"
           alt="Abstract creative"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
           className="w-full h-full object-cover"
           style={{ filter: "brightness(0.15) saturate(0.5)" }}
         />
@@ -79,22 +97,24 @@ export function Hero() {
         ))}
       </div>
 
-      {/* Grain */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06]"
-        aria-hidden
-      >
-        <filter id="g">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.7"
-            numOctaves="4"
-            stitchTiles="stitch"
-          />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#g)" />
-      </svg>
+      {/* Grain (desktop only — feTurbulence is GPU-expensive on mobile) */}
+      {enableHeavyFx && (
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06] hidden md:block"
+          aria-hidden
+        >
+          <filter id="g">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.7"
+              numOctaves="4"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#g)" />
+        </svg>
+      )}
 
       <div className="relative max-w-[1440px] mx-auto px-8 md:px-16 w-full pt-28">
         {/* Badge */}
@@ -120,44 +140,35 @@ export function Hero() {
           </span>
         </motion.div>
 
-        {/* Headline */}
+        {/* Headline — pure CSS keyframe reveal (see globals.css .hero-line) */}
         <div className="overflow-hidden pb-6 -mb-2">
-          <motion.h1
-            initial={{ y: "105%" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
-            className="font-['Playfair_Display'] font-black text-foreground leading-[1]"
+          <h1
+            className="hero-line hero-line--1 font-['Playfair_Display'] font-black text-foreground leading-[1]"
             style={{ fontSize: "clamp(3.8rem, 11vw, 10.5rem)" }}
           >
             Design.
-          </motion.h1>
+          </h1>
         </div>
 
         <div className="overflow-hidden pb-2 -mb-2">
-          <motion.h1
-            initial={{ y: "105%" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.38 }}
-            className="font-['Playfair_Display'] font-black italic leading-[1]"
+          <h1
+            className="hero-line hero-line--2 font-['Playfair_Display'] font-black italic leading-[1]"
             style={{
               fontSize: "clamp(3.8rem, 11vw, 10.5rem)",
               color: "var(--accent)",
             }}
           >
             Build.
-          </motion.h1>
+          </h1>
         </div>
 
         <div className="overflow-hidden pb-2 mb-8">
-          <motion.h1
-            initial={{ y: "105%" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.51 }}
-            className="font-['Playfair_Display'] font-black text-foreground leading-[1]"
+          <h1
+            className="hero-line hero-line--3 font-['Playfair_Display'] font-black text-foreground leading-[1]"
             style={{ fontSize: "clamp(3.8rem, 11vw, 10.5rem)" }}
           >
             Scale.
-          </motion.h1>
+          </h1>
         </div>
 
         <motion.div
