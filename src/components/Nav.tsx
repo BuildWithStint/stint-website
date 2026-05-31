@@ -28,13 +28,13 @@ export function Nav() {
       }}
     >
       <div className="max-w-[1440px] mx-auto px-8 md:px-16 flex items-center justify-between h-20">
-        <a
-          href="#"
+        <Link
+          href="/"
           className="flex items-center"
           onClick={(e) => {
-            e.preventDefault();
-            // Check if user is holding Shift key for admin access
+            // Shift+click still opens admin
             if (e.shiftKey) {
+              e.preventDefault();
               window.location.href = '/admin';
             }
           }}
@@ -48,7 +48,7 @@ export function Nav() {
               filter: 'brightness(1.2) contrast(1.1)'
             }}
           />
-        </a>
+        </Link>
 
         <ul className="hidden md:flex items-center gap-10">
           {NAV_LINKS.map((l) => (
