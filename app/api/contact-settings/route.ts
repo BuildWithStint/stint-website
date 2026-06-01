@@ -15,6 +15,7 @@ async function getContactSettingsHandler(req: NextRequest) {
           email: '',
           enquiryEmail: '',
           address: '',
+          phoneNumbers: [],
           instagram: '',
           twitter: '',
           linkedin: '',
@@ -26,7 +27,10 @@ async function getContactSettingsHandler(req: NextRequest) {
     
     return NextResponse.json({
       success: true,
-      settings
+      settings: {
+        ...settings.toObject(),
+        phoneNumbers: settings.phoneNumbers || []
+      }
     });
   } catch (error) {
     console.error('Get contact settings error:', error);
@@ -39,7 +43,7 @@ async function getContactSettingsHandler(req: NextRequest) {
 
 async function updateContactSettingsHandler(req: AuthenticatedRequest) {
   try {
-    const { email, enquiryEmail, address, instagram, twitter, linkedin, gmailUser, gmailPassword } = await req.json();
+    const { email, enquiryEmail, address, phoneNumbers, instagram, twitter, linkedin, gmailUser, gmailPassword } = await req.json();
 
     if (!email || !enquiryEmail || !address) {
       return NextResponse.json(
@@ -48,44 +52,53 @@ async function updateContactSettingsHandler(req: AuthenticatedRequest) {
       );
     }
 
-    // Find existing settings or create new one
-    let settings = await ContactSettings.findOne();
-
-    if (settings) {
-      // Update existing settings
-      settings.email = email;
-      settings.enquiryEmail = enquiryEmail;
-      settings.address = address;
-      settings.instagram = instagram || '';
-      settings.twitter = twitter || '';
-      settings.linkedin = linkedin || '';
-      settings.gmailUser = gmailUser || '';
-      settings.gmailPassword = gmailPassword || '';
-      settings.updatedBy = req.user?.id as any;
-      
-      await settings.save();
-    } else {
-      // Create new settings
-      settings = new ContactSettings({
-        email,
-        enquiryEmail,
-        address,
-        instagram: instagram || '',
-        twitter: twitter || '',
-        linkedin: linkedin || '',
-        gmailUser: gmailUser || '',
-        gmailPassword: gmailPassword || '',
-        updatedBy: req.user?.id as any
-      });
-      
-      await settings.save();
+    // Validate phone numbers if provided
+    if (phoneNumbers && Array.isArray(phoneNumbers)) {
+      for (const phone of phoneNumbers) {
+        if (phone && typeof phone === 'string') {
+          const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+          if (!/^[\+]?[1-9][\d]{0,15}$/.test(cleanPhone)) {
+            return NextResponse.json(
+              { success: false, error: `Invalid phone number format: ${phone}` },
+              { status: 400 }
+            );
+          }
+        }
+      }
     }
 
-    await settings.populate('updatedBy', 'email');
+    // Use raw MongoDB operations to ensure the field is saved
+    const db = (ContactSettings as any).db;
+    const collection = db.collection('contactsettings');
+    
+    // Delete existing document and create new one
+    await collection.deleteMany({});
+    
+    const newDoc = {
+      email,
+      enquiryEmail,
+      address,
+      phoneNumbers: phoneNumbers || [],
+      instagram: instagram || '',
+      twitter: twitter || '',
+      linkedin: linkedin || '',
+      gmailUser: gmailUser || '',
+      gmailPassword: gmailPassword || '',
+      updatedBy: req.user?.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await collection.insertOne(newDoc);
+    console.log('Insert result:', result);
+    
+    // Fetch the created document
+    const settings = await ContactSettings.findById(result.insertedId).populate('updatedBy', 'email');
+    console.log('Created settings:', settings?.toObject());
 
     return NextResponse.json({
       success: true,
-      settings
+      settings: settings?.toObject()
     });
   } catch (error) {
     console.error('Update contact settings error:', error);

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Mail, MapPin, Save, ExternalLink, Share2 } from 'lucide-react';
+import { Mail, MapPin, Save, ExternalLink, Share2, Phone, Plus, X } from 'lucide-react';
 import { contactSettingsAPI } from '../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -13,6 +13,7 @@ export function ManageContactSettings() {
     email: '',
     enquiryEmail: '',
     address: '',
+    phoneNumbers: [] as string[],
     instagram: '',
     twitter: '',
     linkedin: '',
@@ -33,6 +34,7 @@ export function ManageContactSettings() {
           email: response.settings.email || '',
           enquiryEmail: response.settings.enquiryEmail || '',
           address: response.settings.address || '',
+          phoneNumbers: response.settings.phoneNumbers || [],
           instagram: response.settings.instagram || '',
           twitter: response.settings.twitter || '',
           linkedin: response.settings.linkedin || '',
@@ -46,6 +48,29 @@ export function ManageContactSettings() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const addPhoneNumber = () => {
+    setFormData({
+      ...formData,
+      phoneNumbers: [...formData.phoneNumbers, '']
+    });
+  };
+
+  const removePhoneNumber = (index: number) => {
+    setFormData({
+      ...formData,
+      phoneNumbers: formData.phoneNumbers.filter((_, i) => i !== index)
+    });
+  };
+
+  const updatePhoneNumber = (index: number, value: string) => {
+    const updatedPhones = [...formData.phoneNumbers];
+    updatedPhones[index] = value;
+    setFormData({
+      ...formData,
+      phoneNumbers: updatedPhones
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -183,6 +208,56 @@ export function ManageContactSettings() {
                     placeholder="123 Main Street, City, Country"
                   />
                 </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-foreground">
+                    Phone Numbers
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addPhoneNumber}
+                    className="flex items-center gap-1 px-2 py-1 text-xs bg-accent text-background rounded hover:bg-accent/90 transition-colors"
+                  >
+                    <Plus size={14} />
+                    Add Phone
+                  </button>
+                </div>
+                
+                {formData.phoneNumbers.length === 0 ? (
+                  <div className="text-sm text-muted-foreground italic">
+                    No phone numbers added. Click "Add Phone" to add one.
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {formData.phoneNumbers.map((phone, index) => (
+                      <div key={index} className="flex gap-2">
+                        <div className="relative flex-1">
+                          <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                          <input
+                            type="tel"
+                            value={phone}
+                            onChange={(e) => updatePhoneNumber(index, e.target.value)}
+                            className="w-full pl-10 pr-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                            placeholder="+1 (555) 123-4567"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removePhoneNumber(index)}
+                          className="flex items-center justify-center w-10 h-10 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                          title="Remove phone number"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Add multiple phone numbers for different purposes (office, mobile, etc.)
+                </p>
               </div>
             </div>
           </div>
@@ -358,6 +433,18 @@ export function ManageContactSettings() {
             <div className="flex items-start gap-3 text-sm">
               <MapPin size={16} className="text-accent mt-0.5" />
               <span className="text-foreground">{formData.address}</span>
+            </div>
+          )}
+          {formData.phoneNumbers.length > 0 && (
+            <div className="space-y-2">
+              {formData.phoneNumbers.map((phone, index) => (
+                phone && (
+                  <div key={index} className="flex items-center gap-3 text-sm">
+                    <Phone size={16} className="text-accent" />
+                    <span className="text-foreground">{phone}</span>
+                  </div>
+                )
+              ))}
             </div>
           )}
           

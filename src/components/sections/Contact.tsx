@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
-import { Mail, MapPin, ArrowUpRight, Loader2 } from "lucide-react";
+import { Mail, MapPin, ArrowUpRight, Loader2, Phone } from "lucide-react";
 import { MagneticBtn } from "../MagneticBtn";
 import { contactSettingsAPI, contactFormAPI } from "../../services/api";
 import toast, { Toaster } from "react-hot-toast";
@@ -18,6 +18,7 @@ export function Contact() {
   const [contactInfo, setContactInfo] = useState({
     email: "",
     address: "",
+    phoneNumbers: [] as string[],
     instagram: "",
     twitter: "",
     linkedin: ""
@@ -34,6 +35,7 @@ export function Contact() {
           setContactInfo({
             email: response.settings.email || "",
             address: response.settings.address || "",
+            phoneNumbers: response.settings.phoneNumbers || [],
             instagram: response.settings.instagram || "",
             twitter: response.settings.twitter || "",
             linkedin: response.settings.linkedin || ""
@@ -50,6 +52,10 @@ export function Contact() {
   const CONTACT_INFO = [
     { icon: Mail, text: contactInfo.email },
     { icon: MapPin, text: contactInfo.address },
+    ...(contactInfo.phoneNumbers && contactInfo.phoneNumbers.length > 0 ? 
+      [{ icon: Phone, text: contactInfo.phoneNumbers.join(', ') }] : 
+      []
+    )
   ].filter(item => item.text); // Only show items that have values
 
   const set = (k: string) => (

@@ -4,6 +4,7 @@ export interface IContactSettings extends Document {
   email: string;
   enquiryEmail: string;
   address: string;
+  phoneNumbers: string[];
   instagram?: string;
   twitter?: string;
   linkedin?: string;
@@ -36,6 +37,17 @@ const contactSettingsSchema = new Schema<IContactSettings>({
     trim: true,
     maxlength: 500
   },
+  phoneNumbers: [{
+    type: String,
+    trim: true,
+    validate: {
+      validator: function(v: string) {
+        // Basic phone number validation - allows various formats
+        return /^[\+]?[1-9][\d]{0,15}$/.test(v.replace(/[\s\-\(\)]/g, ''));
+      },
+      message: 'Please enter a valid phone number'
+    }
+  }],
   instagram: {
     type: String,
     trim: true,

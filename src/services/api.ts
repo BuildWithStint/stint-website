@@ -245,9 +245,12 @@ export const contactSettingsAPI = {
     email: string;
     enquiryEmail: string;
     address: string;
+    phoneNumbers?: string[];
     instagram?: string;
     twitter?: string;
     linkedin?: string;
+    gmailUser?: string;
+    gmailPassword?: string;
   }) => {
     const response = await api.put('/contact-settings', settingsData);
     return response.data as any;
