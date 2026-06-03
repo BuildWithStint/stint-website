@@ -32,23 +32,14 @@ async function createProjectHandler(req: AuthenticatedRequest) {
       );
     }
 
-    console.log('Creating project with data:', {
-      title,
-      description: description?.substring(0, 50) + '...',
-      label,
-      imageLength: image?.length,
-      imageStart: image?.substring(0, 50),
-      deploymentLink,
-      accent,
-      createdBy: req.user?.id
-    });
+    console.log('Creating project:', { title, label, image, deploymentLink, accent, createdBy: req.user?.id });
 
     // Create new project
     const project = new Project({
       title,
       description,
       label,
-      image,
+      image: image || '',
       deploymentLink,
       accent,
       createdBy: req.user?.id

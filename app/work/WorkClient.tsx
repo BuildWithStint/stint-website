@@ -22,6 +22,7 @@ export default function WorkPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<string>("All");
+  const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -157,81 +158,151 @@ export default function WorkPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filtered.map((project, i) => (
-                  <motion.a
-                    key={project._id}
-                    href={project.deploymentLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: (i % 6) * 0.08 }}
-                    className="group relative overflow-hidden cursor-pointer block"
-                    style={{ aspectRatio: "4/3" }}
-                    data-hover
-                  >
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      style={{ filter: "brightness(0.5) saturate(0.6)" }}
-                    />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {filtered.map((project, i) => {
+                  const isActive = active === project._id;
+                  return (
+                    <motion.a
+                      key={project._id}
+                      href={project.deploymentLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, y: 36 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: (i % 6) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                      className="group relative overflow-hidden cursor-pointer block aspect-[16/10]"
+                      onMouseEnter={() => setActive(project._id)}
+                      onMouseLeave={() => setActive(null)}
+                      data-hover
+                    >
+                      <motion.img
+                        src={project.image || "/blog-default.png"}
+                        alt={project.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        animate={{ scale: isActive ? 1.05 : 1 }}
+                        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+                        style={{
+                          filter: isActive
+                            ? "brightness(0.62) saturate(1)"
+                            : "brightness(0.48) saturate(0.82)",
+                          transition: "filter 0.7s ease",
+                        }}
+                      />
 
-                    <div
-                      className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
-                      style={{
-                        background: `linear-gradient(135deg, ${project.accent}22 0%, transparent 60%)`,
-                      }}
-                    />
+                      {/* Accent wash */}
+                      <div
+                        className="absolute inset-0 pointer-events-none transition-opacity duration-700"
+                        style={{
+                          background: `linear-gradient(135deg, ${project.accent}26 0%, transparent 55%)`,
+                          opacity: isActive ? 1 : 0,
+                        }}
+                      />
+                      {/* Legibility gradient */}
+                      <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                          background:
+                            "linear-gradient(to top, rgba(10,10,11,0.92) 0%, rgba(10,10,11,0.25) 50%, rgba(10,10,11,0.1) 100%)",
+                        }}
+                      />
 
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, rgba(10,10,11,0.95) 0%, rgba(10,10,11,0.2) 50%, transparent 100%)",
-                      }}
-                    />
-
-                    <div className="absolute inset-0 p-8 flex flex-col justify-between">
-                      <div className="flex items-center justify-between">
+                      {/* Top row: number + label */}
+                      <div className="absolute top-7 left-7 right-7 flex items-start justify-between">
                         <span
-                          className="font-['DM_Mono'] text-[10px] tracking-[0.25em] uppercase px-3 py-1.5"
+                          className="font-['DM_Mono'] text-[11px] tracking-[0.3em] tabular-nums transition-colors duration-500"
                           style={{
-                            background: "rgba(10,10,11,0.6)",
-                            color: project.accent,
-                            backdropFilter: "blur(4px)",
+                            color: isActive
+                              ? project.accent
+                              : "rgba(242,237,228,0.55)",
+                          }}
+                        >
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span
+                          className="font-['DM_Mono'] text-[10px] tracking-[0.3em] uppercase px-3 py-1.5 backdrop-blur-md"
+                          style={{
+                            background: "rgba(10,10,11,0.4)",
+                            color: isActive
+                              ? project.accent
+                              : "rgba(242,237,228,0.6)",
+                            transition: "color 0.5s",
                           }}
                         >
                           {project.label}
                         </span>
+                      </div>
 
+                      {/* Content overlaid at bottom */}
+                      <div className="absolute inset-x-0 bottom-0 p-8">
                         <div
-                          className="w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500"
-                          style={{ background: project.accent }}
-                        >
-                          <ArrowUpRight size={14} color="#0A0A0B" />
+                          className="h-px mb-5 transition-all duration-700 ease-[cubic-bezier(0.65,0,0.35,1)]"
+                          style={{
+                            background: project.accent,
+                            width: isActive ? "72px" : "28px",
+                          }}
+                        />
+                        <div className="flex items-end justify-between gap-6">
+                          <div className="min-w-0">
+                            <h3
+                              className="font-['Playfair_Display'] font-bold leading-[1.05] text-foreground transition-transform duration-500"
+                              style={{
+                                fontSize: "clamp(1.7rem, 2.4vw, 2.4rem)",
+                                transform: isActive
+                                  ? "translateY(-4px)"
+                                  : "translateY(0)",
+                              }}
+                            >
+                              {project.title}
+                            </h3>
+                            <p
+                              className="font-['DM_Sans'] text-sm leading-relaxed mt-3 max-w-md transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                              style={{
+                                color: "rgba(242,237,228,0.72)",
+                                maxHeight: isActive ? 100 : 0,
+                                opacity: isActive ? 1 : 0,
+                                overflow: "hidden",
+                              }}
+                            >
+                              {project.description}
+                            </p>
+                          </div>
+
+                          <div
+                            className="w-12 h-12 shrink-0 flex items-center justify-center rounded-full transition-all duration-500"
+                            style={{
+                              background: isActive
+                                ? project.accent
+                                : "rgba(10,10,11,0.45)",
+                              backdropFilter: "blur(8px)",
+                              border: `1px solid ${
+                                isActive ? project.accent : "rgba(242,237,228,0.2)"
+                              }`,
+                              transform: isActive
+                                ? "rotate(0deg)"
+                                : "rotate(-45deg)",
+                            }}
+                          >
+                            <ArrowUpRight
+                              size={18}
+                              color={
+                                isActive ? "#0A0A0B" : "rgba(242,237,228,0.85)"
+                              }
+                            />
+                          </div>
                         </div>
                       </div>
 
-                      <div>
-                        <div
-                          className="w-6 h-px mb-4 transition-all duration-500 group-hover:w-14"
-                          style={{ background: project.accent }}
-                        />
-                        <h3 className="font-['Playfair_Display'] font-bold text-2xl text-foreground mb-3 group-hover:text-white transition-colors duration-300">
-                          {project.title}
-                        </h3>
-                        <p
-                          className="font-['DM_Sans'] text-sm leading-relaxed transition-all duration-500 opacity-0 group-hover:opacity-100 max-h-0 group-hover:max-h-32 overflow-hidden"
-                          style={{ color: "rgba(242,237,228,0.65)" }}
-                        >
-                          {project.description}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.a>
-                ))}
+                      {/* Hover frame */}
+                      <div
+                        className="absolute inset-0 pointer-events-none transition-opacity duration-700"
+                        style={{
+                          boxShadow: `inset 0 0 0 1px ${project.accent}`,
+                          opacity: isActive ? 0.55 : 0,
+                        }}
+                      />
+                    </motion.a>
+                  );
+                })}
               </div>
             )}
           </div>

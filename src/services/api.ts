@@ -113,7 +113,7 @@ export const projectsAPI = {
     title: string;
     description: string;
     label: string;
-    image: string;
+    image?: string;
     deploymentLink: string;
     accent: string;
   }) => {
@@ -125,7 +125,7 @@ export const projectsAPI = {
     title: string;
     description: string;
     label: string;
-    image: string;
+    image?: string;
     deploymentLink: string;
     accent: string;
   }) => {
@@ -326,13 +326,31 @@ export const blogAPI = {
   upload: async (file: File) => {
     const fd = new FormData();
     fd.append('file', file);
-    const response = await api.post('/blog/upload', fd, {
+    fd.append('folder', 'blog');
+    const response = await api.post('/uploads', fd, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data as {
       success: boolean;
-      id?: string;
       url?: string;
+      publicId?: string;
+      error?: string;
+    };
+  },
+};
+
+export const uploadAPI = {
+  image: async (file: File, folder: 'blog' | 'projects' | 'team' = 'blog') => {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', folder);
+    const response = await api.post('/uploads', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data as {
+      success: boolean;
+      url?: string;
+      publicId?: string;
       error?: string;
     };
   },

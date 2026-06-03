@@ -5,7 +5,7 @@ export interface IBlogPost extends Document {
   title: string
   description: string
   body: string // HTML
-  coverImage?: string // URL or data URI
+  coverImage?: string // Cloudinary URL
   tags: string[]
   keywords: string[]
   author: string

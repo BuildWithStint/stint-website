@@ -33,7 +33,7 @@ const projectSchema = new Schema<IProject>({
   },
   image: {
     type: String,
-    required: true
+    default: ''
   },
   deploymentLink: {
     type: String,

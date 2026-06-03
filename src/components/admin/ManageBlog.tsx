@@ -249,10 +249,10 @@ export function ManageBlog() {
     wrap(`\n<figure>\n  <img src="${url}" alt="${alt}" />\n  <figcaption>${alt}</figcaption>\n</figure>\n`)
   }
 
-  const uploadFile = (file: File, target: 'cover' | 'body') => {
+  const uploadFile = async (file: File, target: 'cover' | 'body') => {
     setError(null)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image exceeds 5MB. Pick a smaller file.')
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Image exceeds 10MB. Pick a smaller file.')
       return
     }
     if (!file.type.startsWith('image/')) {
@@ -260,29 +260,25 @@ export function ManageBlog() {
       return
     }
     setUploading(target)
-    const reader = new FileReader()
-    reader.onerror = () => {
-      setError('Could not read file.')
-      setUploading(null)
-    }
-    reader.onload = (ev) => {
-      const dataUrl = (ev.target?.result as string) || ''
-      if (!dataUrl) {
-        setError('Could not read file.')
-        setUploading(null)
+    try {
+      const res = await blogAPI.upload(file)
+      if (!res.success || !res.url) {
+        setError(res.error || 'Upload failed')
         return
       }
       if (target === 'cover') {
-        setForm((f) => ({ ...f, coverImage: dataUrl }))
+        setForm((f) => ({ ...f, coverImage: res.url! }))
       } else {
         const alt = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ')
         wrap(
-          `\n<figure>\n  <img src="${dataUrl}" alt="${alt}" />\n  <figcaption>${alt}</figcaption>\n</figure>\n`
+          `\n<figure>\n  <img src="${res.url}" alt="${alt}" />\n  <figcaption>${alt}</figcaption>\n</figure>\n`
         )
       }
+    } catch (e: any) {
+      setError(e?.response?.data?.error || 'Upload failed')
+    } finally {
       setUploading(null)
     }
-    reader.readAsDataURL(file)
   }
 
   const onCoverFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -421,7 +417,7 @@ export function ManageBlog() {
                   onClick={() => coverInputRef.current?.click()}
                   disabled={uploading === 'cover'}
                   className="inline-flex items-center gap-2 px-3 text-sm border border-border rounded hover:bg-accent/10 disabled:opacity-50"
-                  title="Upload from your computer (stored in DB)"
+                  title="Upload to Cloudinary"
                 >
                   <Upload className="w-4 h-4" />
                   {uploading === 'cover' ? 'Uploading…' : 'Upload'}

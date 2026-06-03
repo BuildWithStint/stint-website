@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, ExternalLink, X } from 'lucide-react';
-import { projectsAPI } from '../../services/api';
+import { projectsAPI, uploadAPI } from '../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
 import { AlertDialog } from '../ui/Dialog';
 
@@ -111,7 +111,7 @@ export function ManageProjects() {
       title: project.title,
       description: project.description,
       label: project.label,
-      image: project.image,
+      image: project.image || '',
       deploymentLink: project.deploymentLink,
       accent: project.accent
     });
@@ -140,14 +140,29 @@ export function ManageProjects() {
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setFormData({ ...formData, image: e.target?.result as string });
-      };
-      reader.readAsDataURL(file);
+    e.target.value = '';
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Image exceeds 10MB. Pick a smaller file.');
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      toast.error('Only image files are allowed.');
+      return;
+    }
+    const t = toast.loading('Uploading image…');
+    try {
+      const res = await uploadAPI.image(file, 'projects');
+      if (!res.success || !res.url) {
+        toast.error(res.error || 'Upload failed', { id: t });
+        return;
+      }
+      setFormData({ ...formData, image: res.url });
+      toast.success('Image uploaded', { id: t });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error || 'Upload failed', { id: t });
     }
   };
 
