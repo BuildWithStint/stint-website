@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/favicon.svg?v=2',
+        url: '/favicon.svg?v=3',
         width: 1200,
         height: 630,
         alt: 'STINT — Design. Build. Scale.',
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     title: 'STINT — Design. Build. Scale.',
     description:
       'A digital product and software studio building dependable software for modern teams.',
-    images: ['/favicon.svg?v=2'],
+    images: ['/favicon.svg?v=3'],
   },
   robots: {
     index: true,
@@ -94,10 +94,19 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.svg?v=2', type: 'image/svg+xml' },
+      { url: '/favicon.svg?v=3', type: 'image/svg+xml' },
+      { url: '/favicon.svg?v=3', sizes: '32x32', type: 'image/svg+xml' },
+      { url: '/favicon.svg?v=3', sizes: '16x16', type: 'image/svg+xml' },
     ],
-    apple: '/favicon.svg?v=2',
-    shortcut: '/favicon.svg?v=2',
+    apple: '/favicon.svg?v=3',
+    shortcut: '/favicon.svg?v=3',
+    other: [
+      {
+        rel: 'mask-icon',
+        url: '/favicon.svg?v=3',
+        color: '#0A0A0B',
+      },
+    ],
   },
 }
 
