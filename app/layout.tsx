@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/stint-logo.png',
+        url: '/favicon.svg?v=2',
         width: 1200,
         height: 630,
         alt: 'STINT — Design. Build. Scale.',
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     title: 'STINT — Design. Build. Scale.',
     description:
       'A digital product and software studio building dependable software for modern teams.',
-    images: ['/stint-logo.png'],
+    images: ['/favicon.svg?v=2'],
   },
   robots: {
     index: true,
@@ -94,10 +94,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.svg?v=2', type: 'image/svg+xml' },
     ],
-    apple: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    apple: '/favicon.svg?v=2',
+    shortcut: '/favicon.svg?v=2',
   },
 }
 
@@ -113,7 +113,7 @@ const organizationSchema = {
   name: 'STINT',
   alternateName: 'STINT Digital',
   url: SITE_URL,
-  logo: `${SITE_URL}/stint-logo.png`,
+  logo: `${SITE_URL}/favicon.svg`,
   description:
     'A digital product and software studio specialising in web, mobile, custom software, backend, and cloud development.',
   email: 'buildwithstint@gmail.com',
@@ -147,7 +147,7 @@ const professionalServiceSchema = {
   '@type': 'ProfessionalService',
   name: 'STINT',
   url: SITE_URL,
-  image: `${SITE_URL}/stint-logo.png`,
+  image: `${SITE_URL}/favicon.svg`,
   priceRange: '$$',
   areaServed: 'Worldwide',
   serviceType: [
