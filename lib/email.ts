@@ -91,9 +91,18 @@ export const sendEnquiryEmail = async (
   try {
     console.log(`Attempting to send enquiry email to: ${to}`);
     const transporter = await createTransporter();
+    
+    // Determine the exact sender email configured to avoid 553 relay error from Zoho
+    const settings = await ContactSettings.findOne();
+    let senderEmail = process.env.EMAIL_FROM || 'noreply@stintcollective.co';
+    if (settings?.gmailUser && settings?.gmailPassword) {
+      senderEmail = settings.gmailUser;
+    } else if (process.env.EMAIL_SERVICE === 'zoho' && process.env.EMAIL_USER && !process.env.EMAIL_USER.includes('your-')) {
+      senderEmail = process.env.EMAIL_USER;
+    }
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM || 'noreply@stintcollective.co',
+      from: senderEmail,
       to,
       subject: `New Project Enquiry from ${enquiryData.name}`,
       html: `
@@ -133,14 +142,14 @@ ${enquiryData.project}
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully:', info.messageId);
     
-    // Check if using real Gmail or test service
-    const settings = await ContactSettings.findOne();
-    const usingRealGmail = settings?.gmailUser && settings?.gmailPassword;
+    // Check if using real SMTP or test service
+    const usingRealSMTP = (settings?.gmailUser && settings?.gmailPassword) || 
+                          (process.env.EMAIL_SERVICE === 'zoho' && process.env.EMAIL_USER && !process.env.EMAIL_USER.includes('your-'));
     
-    if (!usingRealGmail) {
+    if (!usingRealSMTP) {
       const previewUrl = nodemailer.getTestMessageUrl(info);
       console.log('Preview URL (Ethereal test email):', previewUrl);
-      console.log('Note: This is a test email. To send real emails, configure Gmail credentials in admin panel.');
+      console.log('Note: This is a test email. To send real emails, configure SMTP credentials in admin panel.');
     }
     
     return { success: true, messageId: info.messageId };
