@@ -262,20 +262,20 @@ export function ManageContactSettings() {
             </div>
           </div>
 
-          {/* Gmail Configuration Section */}
+          {/* SMTP Configuration Section */}
           <div className="pt-6 border-t border-border">
             <h3 className="text-lg font-medium text-foreground mb-4 flex items-center gap-2">
               <Mail size={20} className="text-accent" />
-              Gmail Configuration (Optional)
+              SMTP Configuration (Optional)
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Configure Gmail credentials to send real emails. Leave empty to use test email service.
+              Configure SMTP credentials (e.g., Zoho) to send real emails. Leave empty to use test email service.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Gmail Address
+                  Provider Address
                 </label>
                 <div className="relative">
                   <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -284,17 +284,17 @@ export function ManageContactSettings() {
                     value={formData.gmailUser}
                     onChange={(e) => setFormData({ ...formData, gmailUser: e.target.value })}
                     className="w-full pl-10 pr-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-                    placeholder="your-email@gmail.com"
+                    placeholder="e.g. your-email@zoho.in"
                   />
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  The Gmail account that will send emails
+                  The account that will send emails
                 </p>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Gmail App Password
+                  App Password
                 </label>
                 <div className="relative">
                   <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -303,12 +303,11 @@ export function ManageContactSettings() {
                     value={formData.gmailPassword}
                     onChange={(e) => setFormData({ ...formData, gmailPassword: e.target.value })}
                     className="w-full pl-10 pr-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-                    placeholder="16-character app password"
-                    maxLength={16}
+                    placeholder="Your App Password"
                   />
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Generate this from Google Account → Security → 2-Step Verification → App passwords
+                  Generate this from your provider's security settings
                 </p>
               </div>
             </div>

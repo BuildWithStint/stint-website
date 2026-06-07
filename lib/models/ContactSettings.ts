@@ -67,13 +67,11 @@ const contactSettingsSchema = new Schema<IContactSettings>({
     type: String,
     trim: true,
     lowercase: true,
-    match: [/^\S+@gmail\.com$/, 'Please enter a valid Gmail address']
+    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address']
   },
   gmailPassword: {
     type: String,
     trim: true,
-    minlength: 16,
-    maxlength: 16
   },
   updatedBy: {
     type: Schema.Types.ObjectId,

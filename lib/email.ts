@@ -25,27 +25,24 @@ const createTransporter = async () => {
       
       try {
         const transporter = nodemailer.createTransport({
-          host: 'smtp.gmail.com',
-          port: 587,
-          secure: false,
+          host: 'smtp.zoho.in', // Change to smtp.zoho.com or smtp.zoho.eu based on your region
+          port: 465, // Zoho uses 465 for SSL or 587 for TLS
+          secure: true,
           auth: {
             user: settings.gmailUser.trim(),
             pass: settings.gmailPassword.trim()
-          },
-          tls: {
-            rejectUnauthorized: false
           }
         });
         
         // Test the connection
-        console.log('Testing Gmail connection...');
+        console.log('Testing Zoho connection...');
         await transporter.verify();
-        console.log('Gmail connection verified successfully');
+        console.log('Zoho connection verified successfully');
         return transporter;
       } catch (error) {
-        console.error('Gmail connection failed:', error);
+        console.error('Zoho connection failed:', error);
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        throw new Error(`Gmail authentication failed: ${errorMessage}`);
+        throw new Error(`Zoho authentication failed: ${errorMessage}`);
       }
     }
   } catch (dbError) {
@@ -54,11 +51,13 @@ const createTransporter = async () => {
   
   // Fallback to env variables if available
   console.log('Checking environment variables...');
-  if (process.env.EMAIL_SERVICE === 'gmail' && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+  if (process.env.EMAIL_SERVICE === 'zoho' && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
     if (!process.env.EMAIL_USER.includes('your-') && !process.env.EMAIL_PASSWORD.includes('your-')) {
-      console.log('Using Gmail credentials from environment variables');
+      console.log('Using Zoho credentials from environment variables');
       return nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.zoho.in', // Change to smtp.zoho.com or smtp.zoho.eu based on your region
+        port: 465,
+        secure: true,
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASSWORD
