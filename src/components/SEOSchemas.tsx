@@ -50,7 +50,7 @@ export function SEOSchemas() {
       logo: `${SITE_URL}/stint-logo.png`,
       description:
         'A digital product and software studio specialising in web, mobile, custom software, backend, and cloud development.',
-      email: contactSettings.email || 'buildwithstint@gmail.com',
+      email: contactSettings.email || 'contact@stint.digital',
       ...(phoneNumbers.length > 0 && {
         telephone: phoneNumbers
       }),
@@ -62,7 +62,7 @@ export function SEOSchemas() {
       }),
       contactPoint: {
         '@type': 'ContactPoint',
-        email: contactSettings.enquiryEmail || contactSettings.email || 'buildwithstint@gmail.com',
+        email: contactSettings.enquiryEmail || contactSettings.email || 'contact@stint.digital',
         ...(phoneNumbers.length > 0 && {
           telephone: phoneNumbers[0]
         }),

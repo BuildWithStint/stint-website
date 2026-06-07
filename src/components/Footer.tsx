@@ -141,7 +141,7 @@ export function Footer() {
             className="font-['DM_Mono'] text-[10px] tracking-wider"
             style={{ color: 'rgba(242,237,228,0.4)' }}
           >
-            buildwithstint@gmail.com · Remote · Worldwide
+            contact@stint.digital · Remote · Worldwide
           </p>
         </div>
       </div>

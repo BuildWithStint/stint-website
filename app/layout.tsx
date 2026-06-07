@@ -125,10 +125,10 @@ const organizationSchema = {
   logo: `${SITE_URL}/favicon.svg`,
   description:
     'A digital product and software studio specialising in web, mobile, custom software, backend, and cloud development.',
-  email: 'buildwithstint@gmail.com',
+  email: 'contact@stint.digital',
   contactPoint: {
     '@type': 'ContactPoint',
-    email: 'buildwithstint@gmail.com',
+    email: 'contact@stint.digital',
     contactType: 'customer support',
     availableLanguage: ['English'],
   },

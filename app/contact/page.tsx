@@ -5,7 +5,7 @@ import { JsonLd, breadcrumbSchema } from '../../src/components/seo/JsonLd'
 export const metadata: Metadata = {
   title: 'Contact — Start a Project with STINT',
   description:
-    'Tell us about your project. We respond within one business day. Email buildwithstint@gmail.com or use the form.',
+    'Tell us about your project. We respond within one business day. Email contact@stint.digital or use the form.',
   alternates: { canonical: '/contact' },
   openGraph: {
     title: 'Contact STINT',

@@ -7,7 +7,7 @@ import { Plus } from 'lucide-react'
 const FAQS = [
   {
     q: 'How do I hire freelance developers through STINT?',
-    a: 'Send us a short brief via the contact form or email buildwithstint@gmail.com. We respond within one business day, scope the engagement together, and typically start within a week.',
+    a: 'Send us a short brief via the contact form or email contact@stint.digital. We respond within one business day, scope the engagement together, and typically start within a week.',
   },
   {
     q: 'What kinds of software does STINT build?',

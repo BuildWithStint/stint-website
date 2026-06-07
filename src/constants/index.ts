@@ -2,7 +2,7 @@ export const SITE_CONFIG = {
   name: "STINT",
   tagline: "Design. Build. Scale.",
   description: "A digital product and software studio building dependable software for modern teams.",
-  email: "buildwithstint@gmail.com",
+  email: "contact@stint.digital",
   location: "Remote-first · Available worldwide",
   year: "2024",
   status: "Accepting new engagements",
