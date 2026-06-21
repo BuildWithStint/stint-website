@@ -33,6 +33,7 @@ Fill in `.env.local`:
 | `JWT_SECRET` | Signs access tokens | a long random string |
 | `JWT_REFRESH_SECRET` | Signs refresh tokens | a different long random string |
 | `NEXT_PUBLIC_API_BASE_URL` | Axios base URL | `/api` for local dev |
+| `NEXT_PUBLIC_STINT_AUTH_API_BASE_URL` | MedsWorld core auth URL used by `/auth/signin` and `/auth/signup` | `http://localhost:4031` |
 | `NODE_ENV` | Runtime env | `development` |
 | `EMAIL_SERVICE` / `EMAIL_USER` / `EMAIL_PASSWORD` / `EMAIL_FROM` | Nodemailer (contact form) | gmail + app password |
 
@@ -56,6 +57,23 @@ On the first DB connection the app auto-creates the default super admin:
 - **Password:** `admin123`
 
 Log in at <http://localhost:3000/admin/login> and **change this password immediately** before deploying anywhere.
+
+## 4.1 Central product auth UI
+
+MedsWorld product apps should not build their own password screens. Send users to the shared STINT auth UI and identify the requesting product with a `clientId`:
+
+```text
+https://stint.digital/auth/signin?clientId=inventory&product=Inventory&redirectUri=https://inventory.stint.digital/auth/callback
+https://stint.digital/auth/signup?clientId=erp&product=ERP&redirectUri=https://erp.stint.digital/auth/callback
+```
+
+Local development example:
+
+```text
+http://localhost:4000/auth/signin?clientId=inventory&product=Inventory&redirectUri=http://localhost:3001/auth/callback
+```
+
+After a successful sign-in or sign-up, the website calls `MedsWorld/apps/core` and redirects to `redirectUri` with the issued access and refresh tokens in the URL hash. Product apps should read the hash, store the tokens using their own session strategy, refresh via `/auth/refresh`, and call business APIs with `Authorization: Bearer <accessToken>`.
 
 ## 5. Useful scripts
 

@@ -9,10 +9,12 @@ import toast, { Toaster } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { centralAuthAPI } from '@/services/api'
+import { buildProductAuthParamString, completeProductAuth, readProductAuthContext } from '@/utils/central-auth'
 
 const signInSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
 type SignInValues = z.infer<typeof signInSchema>
@@ -36,54 +38,34 @@ function SignPageContent() {
   })
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  // Read product name and redirect URL from query params
-  const product = searchParams.get('product') || ''
-  const redirectUrl = searchParams.get('redirect') || ''
-
-  // Build query string to forward params between sign/signup
-  const buildParamString = () => {
-    const params = new URLSearchParams()
-    if (product) params.set('product', product)
-    if (redirectUrl) params.set('redirect', redirectUrl)
-    const str = params.toString()
-    return str ? `?${str}` : ''
-  }
+  const authContext = readProductAuthContext(searchParams)
+  const product = authContext.product
+  const buildParamString = () => buildProductAuthParamString(authContext)
 
   const handleSignInSubmit = async (data: SignInValues) => {
     setIsLoading(true)
-
-    setTimeout(() => {
+    try {
+      const response = await centralAuthAPI.signIn(data.email, data.password, authContext.request)
       setIsLoading(false)
       toast.success('Signed in successfully!')
-      const fallback = data.email.toLowerCase().includes('admin') ? '/admin/dashboard' : '/'
-      const destination = redirectUrl || fallback
       setTimeout(() => {
-        // Use window.location for external URLs, router.push for internal
-        if (destination.startsWith('http')) {
-          window.location.href = destination
-        } else {
-          router.push(destination)
-        }
-      }, 800)
-    }, 1500)
+        completeProductAuth(response, authContext.destination, router.push)
+      }, 500)
+    } catch (error) {
+      setIsLoading(false)
+      toast.error(centralAuthAPI.errorMessage(error))
+    }
   }
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true)
-
-    setTimeout(() => {
+    try {
+      const response = await centralAuthAPI.getGoogleAuthUrl(authContext.request)
+      window.location.href = response.url
+    } catch (error) {
       setIsGoogleLoading(false)
-      toast.success('Google authentication successful!')
-      const destination = redirectUrl || '/'
-      setTimeout(() => {
-        if (destination.startsWith('http')) {
-          window.location.href = destination
-        } else {
-          router.push(destination)
-        }
-      }, 800)
-    }, 1800)
+      toast.error(centralAuthAPI.errorMessage(error))
+    }
   }
 
   return (

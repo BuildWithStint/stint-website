@@ -1,10 +1,48 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+const STINT_AUTH_API_BASE_URL = process.env.NEXT_PUBLIC_STINT_AUTH_API_BASE_URL || 'http://localhost:4031';
+
+export interface CentralAuthClient {
+  clientId: string | null;
+  redirectUri: string | null;
+}
+
+export interface CentralAuthUser {
+  id: string;
+  orgId?: string;
+  email: string;
+  provider: string;
+  name?: string;
+  picture?: string;
+}
+
+export interface CentralAuthResponse {
+  token: string;
+  accessToken: string;
+  refreshToken: string;
+  tokenType: 'Bearer';
+  expiresInSeconds: number;
+  refreshExpiresInSeconds: number;
+  user: CentralAuthUser;
+  client: CentralAuthClient;
+}
+
+export interface CentralAuthRequestContext {
+  clientId?: string;
+  redirectUri?: string;
+}
 
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+const centralAuthApi = axios.create({
+  baseURL: STINT_AUTH_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -81,6 +119,55 @@ export const authAPI = {
   refreshToken: async (refreshToken: string) => {
     const response = await api.post('/auth/refresh', { refreshToken });
     return response.data as any;
+  },
+};
+
+export const centralAuthAPI = {
+  signIn: async (email: string, password: string, context: CentralAuthRequestContext) => {
+    const response = await centralAuthApi.post('/auth/signin', {
+      email,
+      password,
+      ...context,
+    });
+    return response.data as CentralAuthResponse;
+  },
+
+  signUp: async (email: string, password: string, context: CentralAuthRequestContext) => {
+    const response = await centralAuthApi.post('/auth/signup', {
+      email,
+      password,
+      ...context,
+    });
+    return response.data as CentralAuthResponse;
+  },
+
+  getGoogleAuthUrl: async (context: CentralAuthRequestContext) => {
+    const response = await centralAuthApi.get('/auth/google/url', {
+      params: context,
+    });
+    return response.data as { url: string; state: string; client: CentralAuthClient };
+  },
+
+  refresh: async (refreshToken: string) => {
+    const response = await centralAuthApi.post('/auth/refresh', { refreshToken });
+    return response.data as CentralAuthResponse;
+  },
+
+  logout: async (refreshToken: string) => {
+    await centralAuthApi.post('/auth/logout', { refreshToken });
+  },
+
+  errorMessage: (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+      const data = error.response?.data;
+      if (typeof data === 'object' && data !== null && 'error' in data && typeof data.error === 'string') {
+        return data.error;
+      }
+      if (typeof data === 'object' && data !== null && 'message' in data && typeof data.message === 'string') {
+        return data.message;
+      }
+    }
+    return 'Authentication is unavailable right now.';
   },
 };
 

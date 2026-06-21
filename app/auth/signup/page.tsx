@@ -9,10 +9,12 @@ import toast, { Toaster } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { centralAuthAPI } from '@/services/api'
+import { buildProductAuthParamString, completeProductAuth, readProductAuthContext } from '@/utils/central-auth'
 
 const signUpSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
   confirmPassword: z.string().min(1, 'Please confirm your password'),
   agreeTerms: z.boolean().refine((val) => val === true, 'You must agree to the Terms of Service and Privacy Policy'),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -48,49 +50,45 @@ function SignUpPageContent() {
   const watchAgreeTerms = watch('agreeTerms', false)
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  // Read product name and redirect URL from query params
-  const product = searchParams.get('product') || ''
-  const redirectUrl = searchParams.get('redirect') || ''
-
-  // Build query string to forward params between sign/signup
-  const buildParamString = () => {
-    const params = new URLSearchParams()
-    if (product) params.set('product', product)
-    if (redirectUrl) params.set('redirect', redirectUrl)
-    const str = params.toString()
-    return str ? `?${str}` : ''
-  }
+  const authContext = readProductAuthContext(searchParams)
+  const product = authContext.product
+  const buildParamString = () => buildProductAuthParamString(authContext)
 
   const handleSignUpSubmit = async (data: SignUpValues) => {
     setIsLoading(true)
-
-    setTimeout(() => {
+    try {
+      const response = await centralAuthAPI.signUp(data.email, data.password, authContext.request)
       setIsLoading(false)
       toast.success('Account created successfully!')
-      setTimeout(() => router.push(`/auth/signin${buildParamString()}`), 1200)
-    }, 1500)
+      setTimeout(() => {
+        completeProductAuth(response, authContext.destination, router.push)
+      }, 500)
+    } catch (error) {
+      setIsLoading(false)
+      toast.error(centralAuthAPI.errorMessage(error))
+    }
   }
 
-  const handleGoogleSignUp = () => {
+  const handleGoogleSignUp = async () => {
     if (!watchAgreeTerms) {
       toast.error('You must agree to the Terms of Service')
       return
     }
 
     setIsGoogleLoading(true)
-
-    setTimeout(() => {
+    try {
+      const response = await centralAuthAPI.getGoogleAuthUrl(authContext.request)
+      window.location.href = response.url
+    } catch (error) {
       setIsGoogleLoading(false)
-      toast.success('Account created with Google!')
-      setTimeout(() => router.push(`/auth/signin${buildParamString()}`), 800)
-    }, 1800)
+      toast.error(centralAuthAPI.errorMessage(error))
+    }
   }
 
   // Password strength indicator
   const getPasswordStrength = () => {
     if (!watchPassword) return { width: '0%', color: 'transparent', label: '' }
-    if (watchPassword.length < 6) return { width: '25%', color: '#ef4444', label: 'Weak' }
+    if (watchPassword.length < 8) return { width: '25%', color: '#ef4444', label: 'Weak' }
     if (watchPassword.length < 10) return { width: '50%', color: '#f59e0b', label: 'Fair' }
     if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(watchPassword)) return { width: '100%', color: '#22c55e', label: 'Strong' }
     return { width: '75%', color: '#C8973D', label: 'Good' }
@@ -367,7 +365,7 @@ function SignUpPageContent() {
                 </span>
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Min. 6 characters"
+                  placeholder="Min. 8 characters"
                   className="w-full pl-10 pr-10 py-2.5 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none rounded-lg"
                   {...register('password', { onBlur: () => setFocusedField(null) })}
                   onFocus={() => setFocusedField('password')}
