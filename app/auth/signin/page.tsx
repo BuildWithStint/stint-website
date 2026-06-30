@@ -94,13 +94,6 @@ function SignPageContent() {
 
         <div className="relative z-10 flex min-h-screen flex-col justify-between p-8 sm:p-10 xl:p-14">
           <div>
-            <Link href="/">
-              <img
-                src="/stint-logo.png"
-                alt="STINT Logo"
-                className="h-12 w-auto"
-              />
-            </Link>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -131,7 +124,7 @@ function SignPageContent() {
               className="mt-10 grid gap-6 sm:grid-cols-3"
             >
               {[
-                { value: '150+', label: 'Projects' },
+                { value: '150+', label: 'Hospitals' },
                 { value: '98%', label: 'Satisfaction' },
                 { value: '24/7', label: 'Support' },
               ].map((stat) => (
@@ -154,7 +147,7 @@ function SignPageContent() {
                 ))}
               </div>
               <p className="text-sm leading-relaxed text-slate-700 italic">
-                “STINT transformed our idea into a production-ready platform in weeks, not months. Exceptional quality.”
+                "Committed to delivering compassionate, accurate, and patient-centered healthcare with excellence."
               </p>
               <div className="mt-5 flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2b5d3e]/10 text-[#2b5d3e] font-semibold">
@@ -183,15 +176,6 @@ function SignPageContent() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="relative z-10 w-full max-w-[460px]"
         >
-          <div className="hidden lg:flex justify-center mb-10">
-            <Link href="/">
-              <img
-                src="/stint-logo.png"
-                alt="STINT Logo"
-                className="h-12 w-auto"
-              />
-            </Link>
-          </div>
 
           <div className="mb-8">
             <h2 className="text-3xl font-bold tracking-tight text-slate-950">{product ? `Sign in to ${product}` : 'Sign In'}</h2>
