@@ -18,7 +18,7 @@ export function readProductAuthContext(searchParams: SearchParamsLike): ProductA
   const redirectUri = isHttpUrl(destination) ? new URL(destination).toString() : undefined
 
   return {
-    product: product || clientIdToLabel(clientId),
+    product: normalizeProductLabel(product) || clientIdToLabel(clientId),
     destination,
     request: {
       clientId,
@@ -88,7 +88,19 @@ function normalizeClientId(value: string): string {
   return 'stint'
 }
 
+// Known product display names — slug → proper display label
+const PRODUCT_DISPLAY_NAMES: Record<string, string> = {
+  medsworld: 'MedsWorld',
+}
+
+function normalizeProductLabel(product: string): string {
+  if (!product) return ''
+  return PRODUCT_DISPLAY_NAMES[product.toLowerCase()] ?? product
+}
+
 function clientIdToLabel(clientId: string): string {
+  const lower = clientId.toLowerCase()
+  if (PRODUCT_DISPLAY_NAMES[lower]) return PRODUCT_DISPLAY_NAMES[lower]
   return clientId
     .split('-')
     .filter(Boolean)
