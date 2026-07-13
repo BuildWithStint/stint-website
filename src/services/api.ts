@@ -33,6 +33,37 @@ export interface CentralAuthRequestContext {
   redirectUri?: string;
 }
 
+export interface ConsoleOrgMembership {
+  orgId: string;
+  slug: string;
+  name: string;
+  orgStatus: string;
+  role: string;
+  membershipStatus: string;
+  logo?: string;
+}
+
+export interface ConsoleTokenRequest {
+  email: string;
+  password: string;
+  orgId?: string;
+  clientId?: string;
+  /** Down-scope the token to this subset of held permission keys. Requires orgId. */
+  permissions?: string[];
+  /** Max 86400 (24h), enforced by core. */
+  expiresInSeconds?: number;
+}
+
+export interface ConsoleTokenResponse {
+  token: string;
+  tokenType: 'Bearer';
+  expiresInSeconds: number;
+  user: CentralAuthUser;
+  org?: { orgId: string; slug: string; name: string; role: string };
+  /** Exactly what the generated token carries, so the dev can see its scope. */
+  permissions: string[];
+}
+
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -168,6 +199,44 @@ export const centralAuthAPI = {
       }
     }
     return 'Authentication is unavailable right now.';
+  },
+};
+
+// Developer API console — exchanges real credentials with the central auth
+// service (core) for short-lived, optionally down-scoped access tokens.
+// The endpoint is env-gated on core (auth.console.enabled) and hard-off in
+// production, so this never becomes a live token-minting surface.
+export const consoleAPI = {
+  generateToken: async (body: ConsoleTokenRequest) => {
+    const response = await centralAuthApi.post('/auth/console/token', body);
+    return response.data as ConsoleTokenResponse;
+  },
+
+  getOrgs: async (token: string) => {
+    const response = await centralAuthApi.get('/auth/orgs', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data as { orgs: ConsoleOrgMembership[] };
+  },
+
+  getPermissions: async (token: string) => {
+    const response = await centralAuthApi.get('/auth/permissions', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data as { orgId: string | null; permissions: string[] };
+  },
+
+  errorMessage: (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 429) {
+        return 'Too many credential attempts — the console shares the sign-in throttle. Wait a minute and retry.';
+      }
+      const data = error.response?.data;
+      if (typeof data === 'object' && data !== null && 'error' in data && typeof data.error === 'string') {
+        return data.error;
+      }
+    }
+    return 'The auth service is unreachable. Is core running on its configured port?';
   },
 };
 
