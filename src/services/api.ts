@@ -154,6 +154,22 @@ export const authAPI = {
   },
 };
 
+function assertCentralAuthResponse(body: unknown): CentralAuthResponse {
+  const data =
+    body && typeof body === 'object' && 'data' in body ? (body as { data: unknown }).data : body;
+
+  if (
+    !data ||
+    typeof data !== 'object' ||
+    !('user' in data) ||
+    !(data as { user?: unknown }).user ||
+    !('token' in data)
+  ) {
+    throw new Error('Central auth service returned an unexpected response. Please try again.');
+  }
+  return data as CentralAuthResponse;
+}
+
 export const centralAuthAPI = {
   signIn: async (email: string, password: string, context: CentralAuthRequestContext) => {
     const response = await centralAuthApi.post('/auth/signin', {
@@ -161,7 +177,7 @@ export const centralAuthAPI = {
       password,
       ...context,
     });
-    return response.data as CentralAuthResponse;
+    return assertCentralAuthResponse(response.data);
   },
 
   signUp: async (email: string, password: string, context: CentralAuthRequestContext) => {
@@ -170,19 +186,22 @@ export const centralAuthAPI = {
       password,
       ...context,
     });
-    return response.data as CentralAuthResponse;
+    return assertCentralAuthResponse(response.data);
   },
 
   getGoogleAuthUrl: async (context: CentralAuthRequestContext) => {
     const response = await centralAuthApi.get('/auth/google/url', {
       params: context,
     });
-    return response.data as { url: string; state: string; client: CentralAuthClient };
+    const body = response.data;
+    const data =
+      body && typeof body === 'object' && 'data' in body ? (body as { data: unknown }).data : body;
+    return data as { url: string; state: string; client: CentralAuthClient };
   },
 
   refresh: async (refreshToken: string) => {
     const response = await centralAuthApi.post('/auth/refresh', { refreshToken });
-    return response.data as CentralAuthResponse;
+    return assertCentralAuthResponse(response.data);
   },
 
   logout: async (refreshToken: string) => {
